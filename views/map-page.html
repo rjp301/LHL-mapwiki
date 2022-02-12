@@ -14,7 +14,21 @@
       height: 100%;
       width: 100%;
     }
-
+    #floating-menu {
+      width: 20%;
+      height: 80%;
+      background-color: white;
+      position: fixed;
+      z-index: 1;
+      top: 5%;
+      left: 5%;
+      /*can add show/hide toggle in jQuery*/
+    }
+    #map-page-header{
+      position: fixed;
+      z-index: 1;
+      right: 2%;
+    }
   </style>
   <script>
     // Initialize and add the map
@@ -38,7 +52,19 @@
   </script>
 </head>
 <body>
-
+  <header id="map-page-header">
+    <h1>User McUser</h1>
+  </header>
+  <section id="floating-menu">
+    <div>
+      <h2>My places</h2>
+      <ul class="list-of-locations">
+        <li>Place 1</li>
+        <li>Place 2</li>
+        <li>Place 3</li>
+      </ul>
+    </div>
+  </section>
   <div id="map"></div>
   <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZp_qgsmGJD2eHlS1B-kZ8K6kHeRMgO2c&callback=initMap&libraries=&v=weekly"
