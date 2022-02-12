@@ -1,0 +1,32 @@
+.map-container {
+  padding: 3em;
+  display: flex;
+  justify-content: center;
+
+  flex-wrap: wrap;
+}
+.card {
+  margin: 1em;
+  width: 20%;
+  position: relative;
+
+  &-title {
+    background-color: transparent;
+  }
+
+  &-lists {
+    text-align: center;
+    padding-top: 1em;
+  }
+
+  &-title {
+    text-align: center;
+  }
+}
+.heart-icon {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+.card-item {
+}
