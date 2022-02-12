@@ -5,31 +5,15 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Map page Title</title>
-  <style>
-    html, body {
-      height: 100%;
-      width: 100%;
-    }
-    #map {
-      height: 100%;
-      width: 100%;
-    }
-    #floating-menu {
-      width: 20%;
-      height: 80%;
-      background-color: white;
-      position: fixed;
-      z-index: 1;
-      top: 5%;
-      left: 5%;
-      /*can add show/hide toggle in jQuery*/
-    }
-    #map-page-header{
-      position: fixed;
-      z-index: 1;
-      right: 2%;
-    }
-  </style>
+
+  <!--App JS -->
+  <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+
+  <!-- App Stylesheets -->
+  <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+  <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+  <link rel="stylesheet" href="../public/styles/map-page.css">
+
   <script>
     // Initialize and add the map
     function initMap() {
