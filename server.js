@@ -42,6 +42,7 @@ const widgetsRoutes = require("./routes/widgets");
 // Note: Feel free to replace the example routes below with your own
 app.use("/api/users", usersRoutes(db));
 app.use("/api/widgets", widgetsRoutes(db));
+app.use("/maps", mapsRoutes(db));
 // Note: mount other resources here, using the same pattern above
 
 // Home page
@@ -51,6 +52,10 @@ app.use("/api/widgets", widgetsRoutes(db));
 app.get("/", (req, res) => {
   res.render("index");
 });
+
+// app.get("/maps", (req, res) => {
+//   res.send("map-page");
+// })
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
