@@ -5,24 +5,44 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Map page Title</title>
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+    }
 
+  </style>
+  <script>
+    // Initialize and add the map
+    function initMap() {
+      // The location of Uluru
+      const uluru = { lat: -25.344, lng: 131.036 };
+      // The map, centered at Uluru
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 8,
+        center: uluru,
+        streetViewControl: false,
+        fullscreenControl: false,
+        mapTypeControl: false
+      });
+      // The marker, positioned at Uluru
+      const marker = new google.maps.Marker({
+        position: uluru,
+        map: map,
+      });
+    }
+  </script>
 </head>
 <body>
-  <header>
-    <h1>User McUser</h1>
-  </header>
-  <div id="add-marker">
-    Add
-  </div>
-  <div id="floating-menu">
-    <h2>My places</h2>
-    <ul class="list-of-locations">
-      <li>Place 1</li>
-      <li>Place 2</li>
-      <li>Place 3</li>
-    </ul>
-  </div>
-  <div id="map"></div>
 
+  <div id="map"></div>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZp_qgsmGJD2eHlS1B-kZ8K6kHeRMgO2c&callback=initMap&libraries=&v=weekly"
+    async
+  ></script>
 </body>
 </html>
