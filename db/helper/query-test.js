@@ -1,11 +1,11 @@
-const { getMaps,
-  getMapById,
-  getFavMapsByUserId,
-  getEditMapsByUserId,
-  addMap,
-  deleteMap,
-  updateMap } = require('./map-queries');
+const mapsQueries = require('./map-queries');
+const usersQueries = require('./user-queries');
+const db = require('./../../lib/db');
 
-const { getUsers } = require('./user-queries');
+// db.query('SELECT * FROM pg_catalog.pg_tables', function(err, result) {
+//   console.log(result);
+// });
 
-console.log(getUsers());
+db.query(`SHOW *;`)
+  .then(res => console.log(res.rows))
+  .catch(err => console.error(err.stack));
