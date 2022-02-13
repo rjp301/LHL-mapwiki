@@ -18,6 +18,12 @@ const db = require("../../lib/db");
     .catch((err) => console.error(err.stack));
 };
 
+/**
+ * Get a single map from the database given its id.
+ * @param {string} user_id The id of the user.
+ * @param {string} map_id The id of the map.
+ * @return {Promise<{}>} A promise to the user.
+ */
 module.exports.removeMapFromFavourites = (user_id, map_id) => {
   const queryString = `
   DELETE FROM favourites
