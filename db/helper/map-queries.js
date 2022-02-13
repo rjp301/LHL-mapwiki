@@ -89,8 +89,7 @@ module.exports.addMap = addMap;
  * @return {Promise<{}>} A promise to the user.
  */
 const deleteMap = id => {
-  const queryString = '
-'
+  const queryString = ''
   return db.query(queryString,queryValues)
     .then(res => res.rows)
     .catch(err => console.error(err.stack));
