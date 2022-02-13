@@ -1,17 +1,26 @@
 // Client facing scripts here
 (function () {
-  $(document).ready(() => {
-    renderMaps();
+  $().ready(() => {
+    console.log("ready ");
+    loadMaps();
   });
 
+  const loadMaps = function () {
+    $.get("/api/maps")
+      .then((maps) => {
+        renderMaps(maps);
+      })
+      .catch((error) => {
+        console.log(`loadMaps error: ${error}`);
+      });
+  };
   //create HTML skeleton//
-  const createMapElement = () => {
+  const createMapElement = (map) => {
     const $map = `
-      <h3 calss="card-title">All maps</h3>
       <div class="map-container">
         <div class="card card-item">
-          <p class="card-title">Map title</p>
-          <p>description</p>
+          <p class="card-title">${map.name}</p>
+          <p>${map.description}</p>
           <img
             class="card-img-top"
             src="https://image.shutterstock.com/image-vector/urban-vector-city-map-johannesburg-600w-1757922890.jpg"
@@ -19,16 +28,17 @@
           />
           <span class="heart-icon"><i class="fa-solid fa-heart"></i></span>
         </div>
+      </div>
       `;
     return $map;
   };
 
   //rendering map data from database//
-  const renderMaps = function () {
+  const renderMaps = function (maps) {
     $(".card-lists").empty();
-    // for (const map of maps) {
-    // }
-    const $map = createMapElement();
-    $(".card-lists").prepend($map);
+    for (const map of maps) {
+      const $map = createMapElement(map);
+      $(".card-lists").prepend($map);
+    }
   };
 })();

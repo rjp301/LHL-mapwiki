@@ -1,7 +1,6 @@
-const express = require('express');
-const router  = express.Router();
+const express = require("express");
+const router = express.Router();
 const mapsQueries = require("../db/helper/map-queries");
-
 
 router.get("/:id", (req, res) => {
   // res.send(`Hello this is maps number ${req.params.id}`);
@@ -20,6 +19,19 @@ router.get("/:id", (req, res) => {
   //       .status(500)
   //       .json({ error: err.message });
   //   });
+});
+
+//GET /maps
+
+router.get("/", (req, res) => {
+  mapsQueries
+    .getMaps()
+    .then((maps) => {
+      res.json(maps);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
+    });
 });
 
 module.exports = router;

@@ -37,7 +37,7 @@ const mapsRoutes = require("./routes/maps");
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
 
-app.use("/maps", mapsRoutes);
+app.use("/api/maps", mapsRoutes);
 app.use("/api/users", usersRoutes);
 
 // Note: mount other resources here, using the same pattern above
@@ -47,19 +47,7 @@ app.use("/api/users", usersRoutes);
 // Separate them into separate routes files (see above).
 
 app.get("/", (req, res) => {
-  const maps = mapQueries
-    .getMaps()
-    .then((maps) => {
-      return res.json(maps);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message });
-    });
-  const templateValue = {
-    maps: maps,
-  };
-  console.log(maps);
-  // res.render("index", templateValue);
+  res.render("index");
 });
 
 app.listen(PORT, () => {
