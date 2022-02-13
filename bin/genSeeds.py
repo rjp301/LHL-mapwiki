@@ -21,7 +21,7 @@ for index in range(10):
   users.at[index,"name"] = add_quotes(fake.first_name())
 
 maps = pd.DataFrame()
-for index in range(5):
+for index in range(50):
   location = fake.location_on_land()
   maps.at[index,"creator_id"] = str(randint(1,len(users)))
   maps.at[index,"date_created"] = add_quotes(f"{fake.past_date():%Y-%m-%d}")
@@ -44,6 +44,7 @@ favourites = pd.DataFrame()
 for index in range(25):
   favourites.at[index,"user_id"] = str(randint(1,len(users)))
   favourites.at[index,"map_id"] = str(randint(1,len(maps)))
+  favourites.at[index,"date_added"] = add_quotes(f"{fake.past_date():%Y-%m-%d}")
 
 map_editors = pd.DataFrame()
 for index in range(25):

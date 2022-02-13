@@ -1,13 +1,7 @@
-const { getMaps,
-  getMapById,
-  getFavMapsByUserId,
-  getEditMapsByUserId,
-  addMap,
-  deleteMap,
-  updateMap } = require('./map-queries');
+require("dotenv").config();
+const pinQueries = require('./pin-queries');
 
-const { getUsers } = require('./user-queries');
-const db = require('./../../lib/db');
-db.query(`SELECT * FROM maps`)
-  .then(res => console.log(res.rows))
-  .catch(err => console.error(err.stack));
+pinQueries
+  .deletePin(5)
+  .then(res => console.log(res));
+

@@ -4,5 +4,5 @@ CREATE TABLE maps (
   creator_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   date_created DATE NOT NULL DEFAULT Now(),
   name varchar(255) NOT NULL,
-  description TEXT NOT NULL
+  description TEXT
 );
