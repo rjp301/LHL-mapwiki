@@ -5,7 +5,7 @@ const db = require("../../lib/db");
  * @param {string} id The id of the map.
  * @return {Promise<{}>} A promise to the user.
  */
- module.exports.getAllEditorsByMap = (id) => {
+module.exports.getAllEditorsByMap = (id) => {
   const queryString = `
   SELECT users.name FROM users
   JOIN map_editors ON user_id = users.id
@@ -24,10 +24,11 @@ const db = require("../../lib/db");
  * @param {string} map_id The id of the map.
  * @return {Promise<{}>} A promise to the user.
  */
- module.exports.addMapEditor = (user_id, map_id) => {
+module.exports.addMapEditor = (user_id, map_id) => {
   const queryString = `
   INSERT INTO map_editors (user_id, map_id)
   VALUES ($1, $2)
+  RETURNING *;
   `;
   const queryValues = [user_id, map_id];
   return db
@@ -42,11 +43,12 @@ const db = require("../../lib/db");
  * @param {string} map_id The id of the map.
  * @return {Promise<{}>} A promise to the user.
  */
- module.exports.removeMapEditor = (user_id, map_id) => {
+module.exports.removeMapEditor = (user_id, map_id) => {
   const queryString = `
   DELETE FROM map_editors
   WHERE user_id = $1
   AND map_id = $2
+  RETURNING *;
   `;
   const queryValues = [user_id, map_id];
   return db

@@ -5,45 +5,33 @@ const db = require("../../lib/db");
  * @return {Promise<{}>} A promise to the pin.
  **/
 
-const getPins = (id) => {
+module.exports.getPinsByMap = (map_id) => {
   const queryString = `SELECT * FROM pins WHERE map_id = $1`;
-  const queryParams = [id];
+  const queryValues = [map_id];
   return db
-    .query(queryString, queryParams)
-    .then((response) => {
-      return response.rows;
-    })
-    .catch((err) => {
-      console.log(`getPin Error : ${err.message}`);
-    });
+    .query(queryString, queryValues)
+    .then((res) => res.rows)
+    .catch((err) => console.error(err.stack));
 };
 
 /** Add new pin to the map
- * @param {string} id The id of the map.
+ * @param {string} map_id The id of the map.
  * @param {{ title: string, description: string, image_url: string, lat: number, lng: number}} pin
  * @returns {Promise<{}>}
  **/
 
-const addPin = (pin) => {
+module.exports.addPinToMap = (map_id, pin) => {
+  const keys = Object.keys(pin);
   const queryString = `
-  INSERT INTO pins (title, description, image_url, lat, lng)
-   VALUES ($1, $2, $3, $4, $5 )
-   RETURNING *`;
-  const queryParams = [
-    pin.title,
-    pin.description,
-    pin.image_url,
-    pin.lat,
-    pin.lng,
-  ];
+  INSERT INTO pins (map_id, ${keys.join(', ')})
+  VALUES ($1, ${keys.map((_,i) => `$${i + 2}`).join(', ')})
+  RETURNING *`;
+  const queryValues = [map_id];
+  queryValues.push(...keys.map(i => pin[i]));
   return db
-    .query(queryString, queryParams)
-    .then((response) => {
-      return response.rows[0];
-    })
-    .catch((err) => {
-      console.log(`addPin Error : ${err.message}`);
-    });
+    .query(queryString, queryValues)
+    .then((res) => res.rows[0])
+    .catch((err) => console.error(err.stack));
 };
 
 /** Delete single pin by id
@@ -52,20 +40,14 @@ const addPin = (pin) => {
  * @returns {Promise<{}>}
  *
  */
-const deletePin = (id) => {
-  const queryString = `DELETE FROM pins WHERE id = $1 `;
-  const queryPamras = [id];
-  db.query(queryString, queryPamras)
-    .then((response) => {
-      return response.rows[0];
-    })
-    .catch((err) => {
-      console.log(`deletePin Error : ${err.mesage}`);
-    });
-};
-
-module.exports = {
-  getPins,
-  addPin,
-  deletePin,
+module.exports.deletePin = (id) => {
+  const queryString = `
+  DELETE FROM pins
+  WHERE id = $1
+  RETURNING *;`;
+  const queryValues = [id];
+  return db
+    .query(queryString, queryValues)
+    .then((res) => res.rows)
+    .catch((err) => console.error(err.stack));
 };

@@ -18,8 +18,8 @@ module.exports.getMaps = () => {
  */
 module.exports.getMapById = (id) => {
   const queryString = `
-SELECT * FROM maps
-WHERE id = $1;`;
+  SELECT * FROM maps
+  WHERE id = $1;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
@@ -34,9 +34,9 @@ WHERE id = $1;`;
  */
 module.exports.getFavMapsByUserId = (id) => {
   const queryString = `
-SELECT * FROM maps
-JOIN favourites ON favourites.map_id = maps.id
-WHERE favourites.user_id = $1;`;
+  SELECT * FROM maps
+  JOIN favourites ON favourites.map_id = maps.id
+  WHERE favourites.user_id = $1;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
@@ -51,9 +51,10 @@ WHERE favourites.user_id = $1;`;
  */
 module.exports.getEditMapsByUserId = (id) => {
   const queryString = `
-SELECT * FROM maps
-JOIN map_editors ON map_editors.map_id = maps.id
-WHERE map_editors.user_id = $1;`;
+  SELECT * FROM maps
+  JOIN map_editors ON map_editors.map_id = maps.id
+  WHERE map_editors.user_id = $1
+  OR maps.creator_id = $1;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
@@ -70,9 +71,9 @@ module.exports.addMap = (map) => {
   const keys = Object.keys(map);
   const nums = keys.map((_, i) => `$${i + 1}`);
   const queryString = `
-INSERT INTO maps (${keys.join(", ")})
-VALUES (${nums.join(", ")})
-RETURNING *;`;
+  INSERT INTO maps (${keys.join(", ")})
+  VALUES (${nums.join(", ")})
+  RETURNING *;`;
   const queryValues = keys.map((i) => map[i]);
   console.log(queryString);
   return db
@@ -88,9 +89,9 @@ RETURNING *;`;
  */
 module.exports.deleteMap = (id) => {
   const queryString = `
-DELETE FROM maps
-WHERE id = $1
-RETURNING *;`;
+  DELETE FROM maps
+  WHERE id = $1
+  RETURNING *;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
@@ -108,11 +109,13 @@ module.exports.updateMap = (id, map) => {
   const keys = Object.keys(map);
   const cols = keys.map((e, i) => `${e} = $${i + 1}`);
   const queryString = `
-UPDATE maps
-SET ${cols}
-WHERE id = ${keys.length + 1}
-RETURNING *;`;
-  const queryValues = keys.map((i) => map[i]).push(id);
+  UPDATE maps
+  SET ${cols.join(', ')}
+  WHERE id = $${keys.length + 1}
+  RETURNING *;`;
+  const queryValues = keys.map((i) => map[i]);
+  queryValues.push(id);
+  console.log(queryString);
   return db
     .query(queryString, queryValues)
     .then((res) => res.rows)
