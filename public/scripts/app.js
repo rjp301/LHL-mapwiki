@@ -26,7 +26,6 @@
   const renderMaps = function () {
     $(".card-lists").empty();
     // for (const map of maps) {
-
     // }
     const $map = createMapElement();
     $(".card-lists").prepend($map);

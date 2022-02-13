@@ -21,7 +21,7 @@ const getPins = (id) => {
 };
 
 /** Add new pin to the map
- *
+ * @param {string} id The id of the map.
  * @param {{ title: string, description: string, image_url: string, lat: number, lng: number}} pin
  * @returns {Promise<{}>}
  **/
