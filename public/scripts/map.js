@@ -1,4 +1,6 @@
 $(() => {
+  //note: fix the async bug in this
+
   console.log('hello')
   // Initialize and add the map
   function initMap() {
