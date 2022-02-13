@@ -1,10 +1,6 @@
-const { getMaps,
-  getMapById,
-  getFavMapsByUserId,
-  getEditMapsByUserId,
-  addMap,
-  deleteMap,
-  updateMap } = require('./map-queries');
+const mapsQueries = require('./map-queries');
+const usersQueries = require('./user-queries');
+const db = require('./../../lib/db');
 
 const { getUsers } = require('./user-queries');
 const db = require('./../../lib/db');

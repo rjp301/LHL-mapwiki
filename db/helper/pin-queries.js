@@ -1,5 +1,3 @@
-const { del } = require("express/lib/application");
-
 const db = require("../../lib/db");
 
 /**  Get all the Pins which matched with map id
