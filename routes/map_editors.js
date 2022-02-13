@@ -1,5 +1,7 @@
 /*
 Add: /add
-  - Add 
+  - Add editor to map
+  - 
+
 Delete /:id/delete
 */

@@ -1,5 +1,4 @@
-const express = require('express');
-const router  = express.Router();
+const router  = require('express').Router();
 const mapsQueries = require("../db/helper/map-queries");
 
 
@@ -8,24 +7,27 @@ Browse: /
   - Main index page
   - All maps as small thumnbnails in grid
   - Calls mapQueries.getMaps
+  - returns array of map objects
 
 Browse: /favourites
   - Main index page
   - Maps filtered by user favourites
   - Calls mapQueries.getFavMapsByUserId
+  - returns array of map objects
 
 Browse: /editable
   - Main index page
   - Maps filtered by user editable
   - Calls mapQueries.getEditMapsByUserId
+  - returns array of map objects
 
 Read: /:id
-  - Fullscreen map page
+  - Redirects to fullscreen map page
   - Buttons for adding, deleting or moving pins are hidden
   - Calls mapQueries.getMapById
 
 Edit: /:id/edit
-  - Fullscreen map page
+  - Redirects to fullscreen map page
   - Buttons for adding, deleting or moving pins
 
 Add: /new
@@ -37,6 +39,50 @@ Delete: /:id/delete
   - Button on thumbnail in index page
   - calls mapQueries.deleteMap
 */
+
+
+router.get('/', (req, res) => {
+  mapsQueries
+    .getMaps()
+    .then(response => res.json(response))
+    .catch(err => console.error(err.stack));
+});
+
+router.get('/favourites', (req, res) => {
+  const userId = ????
+  mapsQueries
+    .getFavMapsByUserId(userId)
+    .then(response => res.json(response))
+    .catch(err => console.error(err.stack));
+});
+
+router.get('/editable', (req, res) => {
+  const userId = ????
+  mapsQueries
+    .getEditMapsByUserId(userId)
+    .then(response => res.json(response))
+    .catch(err => console.error(err.stack));
+});
+
+router.get('/:id', (req, res) => {
+
+});
+
+router.get('/:id/edit', (req, res) => {
+
+});
+
+router.get('/:id/delete', (req, res) => {
+  mapsQueries
+    .deleteMap(req.params.id)
+    .then(response => res.json(response))
+    .catch(err => console.error(err.stack));
+});
+
+router.get('/new', (req, res) => {
+
+});
+
 
 
 router.get("/:id", (req, res) => {
