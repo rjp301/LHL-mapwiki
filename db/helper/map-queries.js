@@ -1,23 +1,21 @@
-const { del } = require('express/lib/application');
 const db = require('../../lib/db');
 
 /**
  * Get all maps from the database.
  * @return {Promise<{}>} A promise to the user.
  */
-const getMaps = () => {
+module.exports.getMaps = () => {
   return db.query(`SELECT * FROM maps;`)
     .then(res => res.rows)
     .catch(err => console.error(err.stack));
 };
-module.exports.getMaps = getMaps;
 
 /**
  * Get a single map from the database given its id.
  * @param {string} id The id of the map.
  * @return {Promise<{}>} A promise to the user.
  */
-const getMapById = id => {
+module.exports.getMapById = id => {
   const queryString = `
 SELECT * FROM maps
 WHERE id = $1`;
@@ -26,14 +24,13 @@ WHERE id = $1`;
     .then(res => res.rows[0])
     .catch(err => console.error(err.stack));
 };
-module.exports.getMapById = getMapById;
 
 /**
  * Get all maps that have been favourited by user.
  * @param {string} id The id of the user.
  * @return {Promise<{}>} A promise to the user.
  */
-const getFavMapsByUserId = id => {
+module.exports.getFavMapsByUserId = id => {
   const queryString = `
 SELECT * FROM maps
 JOIN favourites ON favourites.map_id = maps.id
@@ -43,14 +40,13 @@ WHERE favourites.user_id = $1`;
     .then(res => res.rows)
     .catch(err => console.error(err.stack));
 };
-module.exports.getFavMapsByUserId = getFavMapsByUserId;
 
 /**
  * Get all maps that a user can edit.
  * @param {string} id The id of the user.
  * @return {Promise<{}>} A promise to the user.
  */
-const getEditMapsByUserId = id => {
+module.exports.getEditMapsByUserId = id => {
   const queryString = `
 SELECT * FROM maps
 JOIN map_editors ON map_editors.map_id = maps.id
@@ -60,42 +56,41 @@ WHERE map_editors.user_id = $1`;
     .then(res => res.rows)
     .catch(err => console.error(err.stack));
 };
-module.exports.getEditMapsByUserId = getEditMapsByUserId;
-
 
 /**
  * Add map to the database.
  * @param {{creator_id: integer, name: string, description: string}} map
  * @return {Promise<{}>} A promise to the user
  */
-const addMap = map => {
+module.exports.addMap = map => {
   const keys = Object.keys(map);
-  const nums = keys.map((_,i) => `$${i+1}`)
-
+  const nums = keys.map((_, i) => `$${i + 1}`);
   const queryString = `
 INSERT INTO maps (${keys.join(', ')})
 VALUES (${nums.join(', ')})
-RETURNING *`
+RETURNING *`;
+  const queryValues = keys.map(i => map[i]);
   console.log(queryString);
   return db.query(queryString,queryValues)
-    .then(res => res.rows)
+    .then(res => res.rows[0])
     .catch(err => console.error(err.stack));
 };
-module.exports.addMap = addMap;
 
 /**
  * Delete map from database.
  * @param {integer} id The id of the map.
  * @return {Promise<{}>} A promise to the user.
  */
-const deleteMap = id => {
-  const queryString = '
-'
+module.exports.deleteMap = id => {
+  const queryString = `
+DELETE FROM maps
+WHERE id = $1
+RETURNING *`;
+  const queryValues = [id];
   return db.query(queryString,queryValues)
-    .then(res => res.rows)
+    .then(res => res.rows[0])
     .catch(err => console.error(err.stack));
 };
-module.exports.deleteMap = deleteMap;
 
 /**
  * Update map information.
@@ -103,13 +98,16 @@ module.exports.deleteMap = deleteMap;
  * @param {{creator_id: integer, name: string, description: string}} map
  * @return {Promise<{}>} A promise to the user
  */
-const updateMap = (id, map) => {
+module.exports.updateMap = (id, map) => {
+  const keys = Object.keys(map);
+  const cols = keys.map((e, i) => `${e} = $${i + 1}`);
+  const queryString = `
+UPDATE maps
+SET ${cols}
+WHERE id = ${keys.length + 1}
+RETURNING *`;
+  const queryValues = keys.map(i => map[i]).push(id);
   return db.query(queryString,queryValues)
-  .then(res => res.rows)
-  .catch(err => console.error(err.stack));
+    .then(res => res.rows)
+    .catch(err => console.error(err.stack));
 };
-module.exports.updateMap = updateMap;
-
-/**
- *
- */
