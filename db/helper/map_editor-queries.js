@@ -1,7 +1,25 @@
 const db = require("../../lib/db");
 
 /**
- * Get a single map from the database given its id.
+ * Show all contributors of a map.
+ * @param {string} id The id of the map.
+ * @return {Promise<{}>} A promise to the user.
+ */
+ module.exports.getAllEditorsByMap = (id) => {
+  const queryString = `
+  SELECT users.name FROM users
+  JOIN map_editors ON user_id = users.id
+  WHERE map_id = $1
+  `;
+  const queryValues = [id];
+  return db
+    .query(queryString, queryValues)
+    .then((response) => response.rows)
+    .catch((err) => console.error(err.stack));
+};
+
+/**
+ * Add a contributor to a map.
  * @param {string} user_id The id of the user.
  * @param {string} map_id The id of the map.
  * @return {Promise<{}>} A promise to the user.
@@ -19,7 +37,7 @@ const db = require("../../lib/db");
 };
 
 /**
- * Get a single map from the database given its id.
+ * Remove a contributor from a map.
  * @param {string} user_id The id of the user.
  * @param {string} map_id The id of the map.
  * @return {Promise<{}>} A promise to the user.
