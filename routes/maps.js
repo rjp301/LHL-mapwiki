@@ -5,7 +5,9 @@ const mapsQueries = require("../db/helper/map-queries");
 
 router.get("/:id", (req, res) => {
   // res.send(`Hello this is maps number ${req.params.id}`);
-  res.render("map-page");
+  const apiKey = process.env.API_KEY;
+  const templateVars = { apiKey };
+  res.render("map-page", templateVars);
 
   //// IMPLEMENT DATABASE LATER ////
   // db.query(`SELECT * FROM maps WHERE id = $1;`, [req.params.id])
