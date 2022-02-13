@@ -1,7 +1,7 @@
 const db = require("../../lib/db");
 
 /**
- * Get a single map from the database given its id.
+ * Add a map to an user's favourites.
  * @param {string} user_id The id of the user.
  * @param {string} map_id The id of the map.
  * @return {Promise<{}>} A promise to the user.
@@ -19,7 +19,7 @@ const db = require("../../lib/db");
 };
 
 /**
- * Get a single map from the database given its id.
+ * Remove a map from an user's favourites.
  * @param {string} user_id The id of the user.
  * @param {string} map_id The id of the map.
  * @return {Promise<{}>} A promise to the user.
