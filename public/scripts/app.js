@@ -11,6 +11,7 @@
       <div class="map-container">
         <div class="card card-item">
           <p class="card-title">Map title</p>
+          <p>description</p>
           <img
             class="card-img-top"
             src="https://image.shutterstock.com/image-vector/urban-vector-city-map-johannesburg-600w-1757922890.jpg"
