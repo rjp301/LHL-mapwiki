@@ -6,11 +6,11 @@ const pinsQueries = require("../db/helper/pin-queries");
 //   - Fullscreen map page
 //   - All pins which match with the selected map
 //GET /pins
-router.get("/", (req, res) => {
+router.get("/:mapid", (req, res) => {
   //need mapId //
-  // const mapId =
+  const mapId = req.params.mapid
   pinsQueries
-    .getPins()
+    .getPinsByMap(mapId)
     .then((pins) => {
       res.json(pins);
     })
