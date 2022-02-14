@@ -1,5 +1,5 @@
 $().ready(() => {
-  const $container = $('body > section');
+  const $container = $('main');
 
   bindNavButtons();
   $container.append($(`<div id="map-container"></div>`));
@@ -7,6 +7,7 @@ $().ready(() => {
 
 const bindNavButtons = () => {
   $('#maps-new');
+  $('#login-button').click(() => $.get('/login'));
   $('#maps-view-all').click({ path: '/' }, loadMaps);
   $('#maps-view-fav').click({ path: '/favourites' }, loadMaps);
   $('#maps-view-edit').click({ path: '/editable' },loadMaps);
