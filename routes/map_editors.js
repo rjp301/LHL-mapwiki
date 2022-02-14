@@ -16,3 +16,5 @@ router.post('/:id/delete', (req, res) => {
     .then(response => res.json(response))
     .catch(err => console.error(err.stack));
 });
+
+module.exports = router;
