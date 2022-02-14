@@ -23,11 +23,11 @@ module.exports.getPinsByMap = (map_id) => {
 module.exports.addPinToMap = (map_id, pin) => {
   const keys = Object.keys(pin);
   const queryString = `
-  INSERT INTO pins (map_id, ${keys.join(', ')})
-  VALUES ($1, ${keys.map((_,i) => `$${i + 2}`).join(', ')})
+  INSERT INTO pins (map_id, ${keys.join(", ")})
+  VALUES ($1, ${keys.map((_, i) => `$${i + 2}`).join(", ")})
   RETURNING *`;
   const queryValues = [map_id];
-  queryValues.push(...keys.map(i => pin[i]));
+  queryValues.push(...keys.map((i) => pin[i]));
   return db
     .query(queryString, queryValues)
     .then((res) => res.rows[0])

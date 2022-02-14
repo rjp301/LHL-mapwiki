@@ -7,33 +7,27 @@ Browse: /
   - All maps as small thumnbnails in grid
   - Calls mapQueries.getMaps
   - returns array of map objects
-
 Browse: /favourites
   - Main index page
   - Maps filtered by user favourites
   - Calls mapQueries.getFavMapsByUserId
   - returns array of map objects
-
 Browse: /editable
   - Main index page
   - Maps filtered by user editable
   - Calls mapQueries.getEditMapsByUserId
   - returns array of map objects
-
 Read: /:id
   - Redirects to fullscreen map page
   - Buttons for adding, deleting or moving pins are hidden
   - Calls mapQueries.getMapById
-
 Edit: /:id/edit
   - Redirects to fullscreen map page
   - Buttons for adding, deleting or moving pins
-
 Add: /new
   - Button in nav bar of index
   - Redirects to /:id/edit with new ID
   - Calls mapQueries.addMap
-
 Delete: /:id/delete
   - Button on thumbnail in index page
   - calls mapQueries.deleteMap

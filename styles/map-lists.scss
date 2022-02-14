@@ -2,29 +2,24 @@
   padding: 3em;
   display: flex;
   justify-content: center;
-
   flex-wrap: wrap;
 }
 .card {
   margin: 1em;
-  width: 20%;
+  width: 28%;
   position: relative;
 
-  &-title {
-    background-color: transparent;
-  }
-
-  &-lists {
+  &-text {
     text-align: center;
-    padding-top: 1em;
+    font-size: 1rem;
   }
 
   &-title {
-    text-align: center;
+    text-align: left;
   }
 }
 .heart-icon {
   position: absolute;
-  bottom: 10px;
+  top: 10px;
   right: 10px;
 }

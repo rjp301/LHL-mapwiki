@@ -39,7 +39,7 @@ const mapsRoutes = require("./routes/maps");
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
 
-app.use("/api/maps", mapsRoutes);
+app.use("/maps", mapsRoutes);
 app.use("/api/users", usersRoutes);
 
 // Note: mount other resources here, using the same pattern above
