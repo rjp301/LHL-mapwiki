@@ -34,6 +34,7 @@ Add: /new
   */
 
 router.get("/", (req, res) => {
+  // Get all maps
   mapsQueries
     .getMaps()
     .then((response) => res.json(response))
@@ -41,10 +42,15 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  // new map
+  // Create a new map
+  mapsQueries
+    .addMap(req.body)
+    .then((response) => res.json(response))
+    .catch((err) => console.error(err.stack));
 });
 
 router.get("/favourites", (req, res) => {
+  // Get maps that have been favourited
   const userId = req.cookies.userId;
   mapsQueries
     .getFavMapsByUserId(userId)
@@ -53,6 +59,7 @@ router.get("/favourites", (req, res) => {
 });
 
 router.get("/editable", (req, res) => {
+  // Get maps that are editable
   const userId = req.cookies.userId;
   mapsQueries
     .getEditMapsByUserId(userId)
@@ -61,33 +68,23 @@ router.get("/editable", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  // res.send(`Hello this is maps number ${req.params.id}`);
-  const apiKey = process.env.API_KEY;
-  const templateVars = { apiKey };
-  res.render("map-page", templateVars);
-
-  //// IMPLEMENT DATABASE LATER ////
-  // db.query(`SELECT * FROM maps WHERE id = $1;`, [req.params.id])
-  //   .then(data => {
-  //     const users = data.rows;
-  //     res.json({ users });
-  //   })
-  //   .catch(err => {
-  //     res
-  //       .status(500)
-  //       .json({ error: err.message });
-  //   });
+  // Get info of single map by id
+  mapsQueries
+    .getMapById(req.params.id)
+    .then((response) => res.json(response))
+    .catch((err) => console.error(err.stack));
 });
 
 router.post("/:id", (req, res) => {
   // Update map info
   mapsQueries
     .updateMap(req.params.id, req.body)
-    .then(res.render('map-page'))
-    .catch(err => console.error(err.stack));
+    .then((response) => res.json(response))
+    .catch((err) => console.error(err.stack));
 });
 
 router.get("/:id/delete", (req, res) => {
+  // Delete map from database
   mapsQueries
     .deleteMap(req.params.id)
     .then((response) => res.json(response))
