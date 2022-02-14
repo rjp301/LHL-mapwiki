@@ -2,8 +2,8 @@ const db = require("../../lib/db");
 
 /**
  * Add a map to an user's favourites.
- * @param {string} user_id The id of the user.
- * @param {string} map_id The id of the map.
+ * @param {integer} user_id The id of the user.
+ * @param {integer} map_id The id of the map.
  * @return {Promise<{}>} A promise to the user.
  */
 module.exports.addMapToFavourites = (user_id, map_id) => {
@@ -21,8 +21,8 @@ module.exports.addMapToFavourites = (user_id, map_id) => {
 
 /**
  * Remove a map from an user's favourites.
- * @param {string} user_id The id of the user.
- * @param {string} map_id The id of the map.
+ * @param {integer} user_id The id of the user.
+ * @param {integer} map_id The id of the map.
  * @return {Promise<{}>} A promise to the user.
  */
 module.exports.removeMapFromFavourites = (user_id, map_id) => {
