@@ -48,21 +48,21 @@ app.use("/api/users", usersRoutes);
 // Warning: avoid creating more routes in this file!
 // Separate them into separate routes files (see above).
 
-app.get("/", (req, res) => {
-  const maps = mapQueries
-    .getMaps()
-    .then((maps) => {
-      return res.json(maps);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message });
-    });
-  const templateValue = {
-    maps: maps,
-  };
-  console.log(maps);
-  // res.render("index", templateValue);
-});
+// app.get("/", (req, res) => {
+//   const maps = mapQueries
+//     .getMaps()
+//     .then((maps) => {
+//       return res.json(maps);
+//     })
+//     .catch((err) => {
+//       res.status(500).json({ error: err.message });
+//     });
+//   const templateValue = {
+//     maps: maps,
+//   };
+//   console.log(maps);
+//   // res.render("index", templateValue);
+// });
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);

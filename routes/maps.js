@@ -49,7 +49,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/favourites', (req, res) => {
-  const userId = ????
+  const userId = req.cookies.userId;
   mapsQueries
     .getFavMapsByUserId(userId)
     .then(response => res.json(response))
@@ -57,7 +57,7 @@ router.get('/favourites', (req, res) => {
 });
 
 router.get('/editable', (req, res) => {
-  const userId = ????
+  const userId = req.cookies.userId;
   mapsQueries
     .getEditMapsByUserId(userId)
     .then(response => res.json(response))
