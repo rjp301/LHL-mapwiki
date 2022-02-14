@@ -28,10 +28,10 @@ Add: /new
   - Button in nav bar of index
   - Redirects to /:id/edit with new ID
   - Calls mapQueries.addMap
-Delete: /:id/delete
+  Delete: /:id/delete
   - Button on thumbnail in index page
   - calls mapQueries.deleteMap
-*/
+  */
 
 router.get("/", (req, res) => {
   // Get all maps
@@ -41,8 +41,6 @@ router.get("/", (req, res) => {
     .catch((err) => console.error(err.stack));
 });
 
-<<<<<<< HEAD
-=======
 router.post("/", (req, res) => {
   // Create a new map
   mapsQueries
@@ -51,7 +49,6 @@ router.post("/", (req, res) => {
     .catch((err) => console.error(err.stack));
 });
 
->>>>>>> 6eaef0ee7baa89aaeb3ea12002f58aa182f3d1aa
 router.get("/favourites", (req, res) => {
   // Get maps that have been favourited
   const userId = req.cookies.userId;
@@ -78,11 +75,6 @@ router.get("/:id", (req, res) => {
     .catch((err) => console.error(err.stack));
 });
 
-<<<<<<< HEAD
-// router.get("/:id", (req, res) => {});
-
-router.get("/:id/edit", (req, res) => {});
-=======
 router.post("/:id", (req, res) => {
   // Update map info
   mapsQueries
@@ -90,7 +82,6 @@ router.post("/:id", (req, res) => {
     .then((response) => res.json(response))
     .catch((err) => console.error(err.stack));
 });
->>>>>>> 6eaef0ee7baa89aaeb3ea12002f58aa182f3d1aa
 
 router.get("/:id/delete", (req, res) => {
   // Delete map from database
@@ -99,7 +90,5 @@ router.get("/:id/delete", (req, res) => {
     .then((response) => res.json(response))
     .catch((err) => console.error(err.stack));
 });
-
-router.get("/new", (req, res) => {});
 
 module.exports = router;

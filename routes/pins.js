@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
   //need mapId //
   // const mapId =
   pinsQueries
-    .getPins()
+    .getPinsByMap(mapId)
     .then((pins) => {
       res.json(pins);
     })
