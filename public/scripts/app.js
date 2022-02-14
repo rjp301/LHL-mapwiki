@@ -43,6 +43,8 @@ const renderMaps = (maps) => {
   }
 };
 
+
+
 const createMapElement = (map) => {
   const $mapCard = $(`
   <div class="card">
@@ -55,13 +57,19 @@ const createMapElement = (map) => {
   </div>
   `);
 
+  // Is map a favourite already?
+
   const $favButton = $mapCard.find('.heart-icon');
-  $favButton.click(() => {
-    $.post('/favourites', {
-      userId: readCookie('userId'),
-      mapId: map.id
-    });
-  });
+  $favButton.toggle(
+    () => {
+      $.post('/favourites', {
+        userId: readCookie('userId'),
+        mapId: map.id
+      })
+    },
+    () =>
+
+  );
   return $mapCard;
 };
 

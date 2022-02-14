@@ -6,7 +6,11 @@ const db = require("../../lib/db");
  */
 module.exports.getMaps = () => {
   return db
-    .query(`SELECT * FROM maps;`)
+    .query(`
+    SELECT maps.*, avg(pins.lat) AS avg_lat, avg(pins.lng) AS avg_lng FROM maps
+    JOIN pins ON pins.map_id = maps.id
+    GROUP BY maps.id;
+    `)
     .then((res) => res.rows)
     .catch((err) => console.error(err.stack));
 };
