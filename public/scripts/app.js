@@ -13,6 +13,7 @@
         console.log(`loadMaps error: ${error}`);
       });
   };
+
   //create HTML skeleton//
   const createMapElement = (map) => {
     const $map = `
