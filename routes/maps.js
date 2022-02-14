@@ -56,19 +56,6 @@ router.get("/editable", (req, res) => {
     .catch((err) => console.error(err.stack));
 });
 
-router.get("/:id", (req, res) => {});
-
-router.get("/:id/edit", (req, res) => {});
-
-router.get("/:id/delete", (req, res) => {
-  mapsQueries
-    .deleteMap(req.params.id)
-    .then((response) => res.json(response))
-    .catch((err) => console.error(err.stack));
-});
-
-router.get("/new", (req, res) => {});
-
 router.get("/:id", (req, res) => {
   // res.send(`Hello this is maps number ${req.params.id}`);
   const apiKey = process.env.API_KEY;
@@ -87,5 +74,18 @@ router.get("/:id", (req, res) => {
   //       .json({ error: err.message });
   //   });
 });
+
+// router.get("/:id", (req, res) => {});
+
+router.get("/:id/edit", (req, res) => {});
+
+router.get("/:id/delete", (req, res) => {
+  mapsQueries
+    .deleteMap(req.params.id)
+    .then((response) => res.json(response))
+    .catch((err) => console.error(err.stack));
+});
+
+router.get("/new", (req, res) => {});
 
 module.exports = router;
