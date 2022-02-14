@@ -68,6 +68,15 @@ router.get("/editable", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
+  // Render map page templage
+  const templateVars = {
+    apiKey: process.env.API_KEY,
+    id: req.params.id
+  };
+  res.render("map-page", templateVars);
+});
+
+router.get("/api/:id", (req, res) => {
   // Get info of single map by id
   mapsQueries
     .getMapById(req.params.id)
