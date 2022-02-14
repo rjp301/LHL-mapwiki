@@ -1,36 +1,37 @@
 nav {
-  background-color: #94daff;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: 20px;
-  padding-right: 20px;
-
-  div * {
-    margin: 0.5rem;
-  }
-
-  i {
-    transform: scale(2.3);
-  }
-
-  .nav-group {
+  div.nav {
+    background-color: #94daff;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    div * {
+      margin: 0.5rem;
+    }
+
+    i {
+      transform: scale(2.3);
+    }
+
+    .nav-group {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    button {
+      border: none;
+      padding: 0.2rem 1rem;
+      background-color: #b983ff;
+    }
   }
 
-  button {
-    border: none;
-    padding: 0.2rem 1rem;
-    background-color: #b983ff;
+  div.maps-nav {
+    background-color: #7db5d3;
   }
-}
-
-nav.maps-nav {
-  background-color: #7ebfe2;
-
 }
 
 //   .__logo {
