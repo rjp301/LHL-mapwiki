@@ -79,19 +79,13 @@ router.get("/:id", (req, res) => {
   //   });
 });
 
-<<<<<<< HEAD
-// router.get("/:id", (req, res) => {});
-
-router.get("/:id/edit", (req, res) => {});
-=======
 router.post("/:id", (req, res) => {
   // Update map info
   mapsQueries
     .updateMap(req.params.id, req.body)
-    .then(res.render('map-page'))
-    .catch(err => console.error(err.stack));
+    .then(res.render("map-page"))
+    .catch((err) => console.error(err.stack));
 });
->>>>>>> 69aa0b414866781db8f275a5e1596cf6c928234b
 
 router.get("/:id/delete", (req, res) => {
   mapsQueries
@@ -99,10 +93,5 @@ router.get("/:id/delete", (req, res) => {
     .then((response) => res.json(response))
     .catch((err) => console.error(err.stack));
 });
-
-<<<<<<< HEAD
-router.get("/new", (req, res) => {});
-=======
->>>>>>> 69aa0b414866781db8f275a5e1596cf6c928234b
 
 module.exports = router;
