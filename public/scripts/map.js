@@ -16,45 +16,44 @@ function initMap() {
   });
 }
 
-$(() => {
-  const $newMap = $('#new-map');
+(function () {
+  $(document).ready(() => {
+    renderMap();
+  });
 
-  $newMap.on('click', () => {
-    console.log('hi');
-    $('.nav').slideUp(250);
-  })
-});
+  const pathname = window.location.pathname;
+  const mapId = pathname.split('/')[2];
 
-// (function () {
-//   $(document).ready(() => {
-//     renderMap();
-//   });
+  $
+    .get(`/maps/api/${mapId}`)
+    .then((map) => renderMap(map))
 
-//   //create HTML skeleton//
-//   const createMapElement = () => {
-//     const $map = `
+  //create HTML skeleton//
+  const createMapElement = (map) => {
+    const mapName = map.name;
+    const mapDesc = map.description;
+    const $map = `
+    <section id="list-of-locations">
+      <button id="back-to-maps">Back to maps</button>
+      <h2>${mapName}</h2>
+      <p>${mapDesc}</p>
+      <ul>
+        <li>Place 1</li>
+        <li>Place 2</li>
+        <li>Place 3</li>
+      </ul>
+    </section>
+    <div id="map-buttons">
+      <button class="add-marker">Add</button>
+      <button class="share-btn">Share</button>
+    </div>
+ `;
+    return $map;
+  };
 
-//     <section id="list-of-locations">
-//       <button id="back-to-maps">Back to maps</button>
-//       <h2>My places</h2>
-//       <ul>
-//         <li>Place 1</li>
-//         <li>Place 2</li>
-//         <li>Place 3</li>
-//       </ul>
-//     </section>
-//     <div id="map-buttons">
-//       <button class="add-marker">Add</button>
-//       <button class="share-btn">Share</button>
-//     </div>
-
-//  `;
-//     return $map;
-//   };
-
-//   const renderMap = function (map) {
-//     $("#floating-menu").empty();
-//     const $map = createMapElement(map);
-//     $("#floating-menu").append($map);
-//   };
-// })();
+  const renderMap = function (map) {
+    $("#floating-menu").empty();
+    const $map = createMapElement(map);
+    $("#floating-menu").append($map);
+  };
+})();
