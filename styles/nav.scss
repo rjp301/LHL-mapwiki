@@ -12,7 +12,7 @@ nav {
   }
 
   i {
-    transform: scale(2.5);
+    transform: scale(2.3);
   }
 
   .nav-group {
@@ -21,11 +21,16 @@ nav {
     align-items: center;
   }
 
-  .nav-button {
+  button {
     border: none;
-    padding: 0.5rem 2rem;
+    padding: 0.2rem 1rem;
     background-color: #b983ff;
   }
+}
+
+nav.maps-nav {
+  background-color: #7ebfe2;
+
 }
 
 //   .__logo {
