@@ -1,12 +1,11 @@
 // Client facing scripts here
 (function () {
   $().ready(() => {
-    console.log("ready ");
     loadMaps();
   });
 
   const loadMaps = function () {
-    $.get("/api/maps")
+    $.get("/maps")
       .then((maps) => {
         renderMaps(maps);
       })

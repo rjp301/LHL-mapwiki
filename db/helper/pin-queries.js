@@ -8,7 +8,9 @@ const db = require("../../lib/db");
  **/
 
 const getPins = (id) => {
-  const queryString = `SELECT * FROM pins WHERE map_id = $1`;
+  const queryString = `
+  SELECT * FROM pins
+  WHERE map_id = $1;`;
   const queryParams = [id];
   return db
     .query(queryString, queryParams)
@@ -17,6 +19,26 @@ const getPins = (id) => {
     })
     .catch((err) => {
       console.log(`getPin Error : ${err.message}`);
+    });
+};
+
+/**
+ * Get a single pin from the database given its id.
+ * @param {string} id The id of the map.
+ * @return {Promise<{}>} A promise to the user.
+ */
+const getPinById = (id) => {
+  const queryString = `
+  SELECT * FROM pins
+  WHERE id = $1;`;
+  const queryPamras = [id];
+  return db
+    .query(queryString, queryPamras)
+    .then((response) => {
+      return response.rows[0];
+    })
+    .catch((err) => {
+      console.log(`getPinById Error: ${err.message}`);
     });
 };
 
@@ -70,4 +92,5 @@ module.exports = {
   getPins,
   addPin,
   deletePin,
+  getPinById,
 };

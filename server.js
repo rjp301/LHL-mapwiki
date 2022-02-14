@@ -35,8 +35,8 @@ const pinsRoutes = require("./routes/pins");
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
 app.use("/api/users", usersRoutes);
-app.use("/api/maps", mapsRoutes);
-app.use("/api/pins", pinsRoutes);
+app.use("/maps", mapsRoutes);
+app.use("/pins", pinsRoutes);
 
 // Note: mount other resources here, using tshe same pattern above
 
