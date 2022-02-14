@@ -28,16 +28,20 @@ Add: /new
   - Button in nav bar of index
   - Redirects to /:id/edit with new ID
   - Calls mapQueries.addMap
-Delete: /:id/delete
+  Delete: /:id/delete
   - Button on thumbnail in index page
   - calls mapQueries.deleteMap
-*/
+  */
 
 router.get("/", (req, res) => {
   mapsQueries
     .getMaps()
     .then((response) => res.json(response))
     .catch((err) => console.error(err.stack));
+});
+
+router.post("/", (req, res) => {
+  // new map
 });
 
 router.get("/favourites", (req, res) => {
@@ -75,9 +79,19 @@ router.get("/:id", (req, res) => {
   //   });
 });
 
+<<<<<<< HEAD
 // router.get("/:id", (req, res) => {});
 
 router.get("/:id/edit", (req, res) => {});
+=======
+router.post("/:id", (req, res) => {
+  // Update map info
+  mapsQueries
+    .updateMap(req.params.id, req.body)
+    .then(res.render('map-page'))
+    .catch(err => console.error(err.stack));
+});
+>>>>>>> 69aa0b414866781db8f275a5e1596cf6c928234b
 
 router.get("/:id/delete", (req, res) => {
   mapsQueries
@@ -86,6 +100,9 @@ router.get("/:id/delete", (req, res) => {
     .catch((err) => console.error(err.stack));
 });
 
+<<<<<<< HEAD
 router.get("/new", (req, res) => {});
+=======
+>>>>>>> 69aa0b414866781db8f275a5e1596cf6c928234b
 
 module.exports = router;

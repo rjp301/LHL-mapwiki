@@ -2,7 +2,7 @@ const db = require("../../lib/db");
 
 /**
  * Show all contributors of a map.
- * @param {string} id The id of the map.
+ * @param {integer} id The id of the map.
  * @return {Promise<{}>} A promise to the user.
  */
 module.exports.getAllEditorsByMap = (id) => {
@@ -20,8 +20,8 @@ module.exports.getAllEditorsByMap = (id) => {
 
 /**
  * Add a contributor to a map.
- * @param {string} user_id The id of the user.
- * @param {string} map_id The id of the map.
+ * @param {integer} user_id The id of the user.
+ * @param {integer} map_id The id of the map.
  * @return {Promise<{}>} A promise to the user.
  */
 module.exports.addMapEditor = (user_id, map_id) => {
@@ -39,8 +39,8 @@ module.exports.addMapEditor = (user_id, map_id) => {
 
 /**
  * Remove a contributor from a map.
- * @param {string} user_id The id of the user.
- * @param {string} map_id The id of the map.
+ * @param {integer} user_id The id of the user.
+ * @param {integer} map_id The id of the map.
  * @return {Promise<{}>} A promise to the user.
  */
 module.exports.removeMapEditor = (user_id, map_id) => {
