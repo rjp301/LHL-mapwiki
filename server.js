@@ -15,7 +15,7 @@ const cookieParser = require("cookie-parser");
 app.use(morgan("dev"));
 app.use(cookieParser());
 
-app.set("view engine", "ejs");
+// app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
@@ -28,6 +28,15 @@ app.use(
 );
 
 app.use(express.static("public"));
+
+// Home page
+// Warning: avoid creating more routes in this file!
+// Separate them into separate routes files (see above).
+app.get("/login", (req, res) => {
+  console.log(process.env.USER_ID);
+  res.cookie('userId', process.env.USER_ID);
+  res.redirect("/");
+});
 
 // Separated Routes for each Resource
 const usersRoutes = require("./routes/users");
@@ -42,17 +51,6 @@ app.use('/maps', mapsRoutes);
 app.use('/pins', pinsRoutes);
 app.use('/favourites', favouritesRoutes);
 app.use('/map_editors', map_editorsRoutes);
-
-// Note: Feel free to replace the example routes below with your own
-// Note: mount other resources here, using the same pattern above
-
-// Home page
-// Warning: avoid creating more routes in this file!
-// Separate them into separate routes files (see above).
-
-app.get("/", (req, res) => {
-  res.render("index");
-});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
