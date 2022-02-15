@@ -1,13 +1,28 @@
-var map;
+//first initialize the map as a global valuable//
+let map;
+
 $(document).ready(() => {
   fetchMap();
 });
 
-const pathname = window.location.pathname;
-const mapId = pathname.split("/")[2];
+//For fulsize google map//
+const loadMap = (mapData) => {
+  map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 12,
+    center: { lat: mapData.avg_lat, lng: mapData.avg_lng },
+    streetViewControl: false,
+    fullscreenControl: false,
+    mapTypeControl: false,
+  });
+};
 
-const fetchMap = () => {
-  $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
+//For google map pins//
+const passPins = (pin) => {
+  const marker = new google.maps.Marker({
+    position: { lat: pin.lat, lng: pin.lng },
+    map: map,
+  });
+  console.log(marker);
 };
 
 //create HTML skeleton//
@@ -31,23 +46,30 @@ const createMapElement = (map) => {
   return $map;
 };
 
-const renderMap = function (map) {
-  const renderPins = (pins) => {
-    for (const pin of pins) {
-      console.log(pin);
-      addPins(pin);
-      loadMap;
-      $(".pin-list").prepend(`<li>${pin.title}</li>`);
-    }
-  };
+//get mapid from route/
+const pathname = window.location.pathname;
+const mapId = pathname.split("/")[2];
 
-  const loadPins = (mapId) => {
+const fetchMap = () => {
+  $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
+};
+
+const renderMap = function (map) {
+  const fetchPins = (mapId) => {
     $.get(`/pins/${mapId}`).then((pins) => {
       renderPins(pins);
     });
   };
+
+  const renderPins = (pins) => {
+    for (const pin of pins) {
+      passPins(pin);
+      $(".pin-list").prepend(`<li>${pin.title}</li>`);
+    }
+  };
+
   loadMap(map);
-  loadPins(map.id);
+  fetchPins(map.id);
 
   $("#floating-menu").empty();
   const $map = createMapElement(map);
@@ -55,24 +77,3 @@ const renderMap = function (map) {
 };
 
 //
-
-const addPins = (pin) => {
-  const marker = new google.maps.Marker({
-    position: { lat: pin.lat, lng: pin.lng },
-    map: map,
-  });
-  console.log(marker);
-};
-//create pin list from database//
-
-//show full map to the screen//
-const loadMap = (mapData) => {
-  console.log(mapData);
-  map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 12,
-    center: { lat: mapData.avg_lat, lng: mapData.avg_lng },
-    streetViewControl: false,
-    fullscreenControl: false,
-    mapTypeControl: false,
-  });
-};
