@@ -40,6 +40,7 @@ module.exports.addPinToMap = (map_id, pin) => {
  * @returns {Promise<{}>}
  *
  */
+
 module.exports.deletePin = (id) => {
   const queryString = `
   DELETE FROM pins

@@ -1,59 +1,94 @@
-function initMap() {
-  // The location of Uluru
-  const uluru = { lat: -25.344, lng: 131.036 };
-  // The map, centered at Uluru
-  const map = new google.maps.Map(document.getElementById("map"), {
+//first initialize the map as a global valuable//
+let map;
+
+$(document).ready(() => {
+  fetchMap();
+});
+
+//For fulsize google map//
+const loadMap = (mapData) => {
+  map = new google.maps.Map(document.getElementById("map"), {
     zoom: 12,
-    center: uluru,
+    center: { lat: mapData.avg_lat, lng: mapData.avg_lng },
     streetViewControl: false,
     fullscreenControl: false,
-    mapTypeControl: false
+    mapTypeControl: false,
   });
-  // The marker, positioned at Uluru
+};
+
+//For google map pins//
+const mapPins = (pin) => {
+  console.log(pin);
   const marker = new google.maps.Marker({
-    position: uluru,
+    position: { lat: pin.lat, lng: pin.lng },
     map: map,
   });
-}
 
-(function () {
-  $(document).ready(() => {
-    renderMap();
+  const infowindow = new google.maps.InfoWindow({
+    content: `<h3>${pin.title}</h3>
+              <img src='${pin.image_url}'>
+              <p>${pin.description}</p>
+             `,
   });
 
-  const pathname = window.location.pathname;
-  const mapId = pathname.split('/')[2];
+  marker.addListener("click", () => {
+    infowindow.open({
+      anchor: marker,
+      map,
+    });
+  });
+};
 
-  $
-    .get(`/maps/api/${mapId}`)
-    .then((map) => renderMap(map))
-
-  //create HTML skeleton//
-  const createMapElement = (map) => {
-    const mapName = map.name;
-    const mapDesc = map.description;
-    const $map = `
+//create HTML skeleton//
+const createMapElement = (map) => {
+  const mapName = map.name;
+  const mapDesc = map.description;
+  const $map = `
     <section id="list-of-locations">
       <button id="back-to-maps">Back to maps</button>
       <h2>${mapName}</h2>
       <p>${mapDesc}</p>
-      <ul>
-        <li>Place 1</li>
-        <li>Place 2</li>
-        <li>Place 3</li>
+      <ul class='pin-list'>
       </ul>
     </section>
+
     <div id="map-buttons">
       <button class="add-marker">Add</button>
       <button class="share-btn">Share</button>
     </div>
  `;
-    return $map;
+  return $map;
+};
+
+//get mapid from route/
+const pathname = window.location.pathname;
+const mapId = pathname.split("/")[2];
+
+const fetchMap = () => {
+  $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
+};
+
+const renderMap = function (map) {
+  const fetchPins = (mapId) => {
+    $.get(`/pins/${mapId}`).then((pins) => {
+      renderPins(pins);
+    });
   };
 
-  const renderMap = function (map) {
-    $("#floating-menu").empty();
-    const $map = createMapElement(map);
-    $("#floating-menu").append($map);
+  const renderPins = (pins) => {
+    for (const pin of pins) {
+      mapPins(pin);
+
+      $(".pin-list").prepend(`<li>${pin.title}</li>`);
+    }
   };
-})();
+
+  loadMap(map);
+  fetchPins(map.id);
+
+  $("#floating-menu").empty();
+  const $map = createMapElement(map);
+  $("#floating-menu").append($map);
+};
+
+//
