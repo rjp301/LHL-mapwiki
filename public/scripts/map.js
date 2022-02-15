@@ -17,12 +17,26 @@ const loadMap = (mapData) => {
 };
 
 //For google map pins//
-const passPins = (pin) => {
+const mapPins = (pin) => {
+  console.log(pin);
   const marker = new google.maps.Marker({
     position: { lat: pin.lat, lng: pin.lng },
     map: map,
   });
-  console.log(marker);
+
+  const infowindow = new google.maps.InfoWindow({
+    content: `<h3>${pin.title}</h3>
+              <img src='${pin.image_url}'>
+              <p>${pin.description}</p>
+             `,
+  });
+
+  marker.addListener("click", () => {
+    infowindow.open({
+      anchor: marker,
+      map,
+    });
+  });
 };
 
 //create HTML skeleton//
@@ -63,7 +77,8 @@ const renderMap = function (map) {
 
   const renderPins = (pins) => {
     for (const pin of pins) {
-      passPins(pin);
+      mapPins(pin);
+
       $(".pin-list").prepend(`<li>${pin.title}</li>`);
     }
   };
