@@ -45,7 +45,7 @@ const createMapElement = (map) => {
   const mapDesc = map.description;
   const $map = `
     <section id="list-of-locations">
-      <button id="back-to-maps">Back to maps</button>
+      <a id="back-to-maps" href="/">Back to maps</a>
       <h2>${mapName}</h2>
       <p>${mapDesc}</p>
       <ul class='pin-list'>
