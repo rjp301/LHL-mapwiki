@@ -33,8 +33,8 @@ const loadMaps = (data) => {
     .then(maps => renderMaps(maps))
     .catch(err => console.error(err.stack));
 
-    const $mapId = $('.card').attr('id');
-    console.log($mapId)
+  const $mapId = $('.card').attr('id');
+  console.log($mapId);
 };
 
 const renderMaps = (maps) => {
@@ -44,15 +44,15 @@ const renderMaps = (maps) => {
     const $map = createMapElement(map);
     $mapContainer.append($map);
   }
-}
-
-
-
+};
 
 const createMapElement = (map) => {
   const $mapCard = $(`
   <a class="card" href="/maps/${map.id}">
-    <i class="fa-solid fa-heart heart-icon"></i>
+    <div class="card-icons">
+      <i class="fa-solid fa-heart"></i>
+      <i class="fa-solid fa-share"></i>
+    </div>
     <img src="https://i.stack.imgur.com/RdkOb.jpg" alt="">
     <div class="card-text">
       <h3>${map.name}</h3>
