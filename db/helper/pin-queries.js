@@ -5,9 +5,27 @@ const db = require("../../lib/db");
  * @return {Promise<{}>} A promise to the pin.
  **/
 
-module.exports.getPinsByMap = (map_id) => {
+const getPinsByMap = (map_id) => {
   const queryString = `SELECT * FROM pins WHERE map_id = $1`;
   const queryValues = [map_id];
+  return db
+    .query(queryString, queryValues)
+    .then((res) => res.rows)
+    .catch((err) => console.error(err.stack));
+};
+
+/** Delete single pin by id
+ *
+ * @param {string} id
+ * @returns {Promise<{}>}
+ *
+ */
+const deletePin = (id) => {
+  const queryString = `
+  DELETE FROM pins
+  WHERE id = $1
+  RETURNING *;`;
+  const queryValues = [id];
   return db
     .query(queryString, queryValues)
     .then((res) => res.rows)
@@ -34,21 +52,7 @@ module.exports.addPinToMap = (map_id, pin) => {
     .catch((err) => console.error(err.stack));
 };
 
-/** Delete single pin by id
- *
- * @param {string} id
- * @returns {Promise<{}>}
- *
- */
-
-module.exports.deletePin = (id) => {
-  const queryString = `
-  DELETE FROM pins
-  WHERE id = $1
-  RETURNING *;`;
-  const queryValues = [id];
-  return db
-    .query(queryString, queryValues)
-    .then((res) => res.rows)
-    .catch((err) => console.error(err.stack));
+module.exports = {
+  getPinsByMap,
+  deletePin,
 };

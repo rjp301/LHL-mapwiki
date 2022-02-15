@@ -2,6 +2,7 @@
 let map;
 
 $(document).ready(() => {
+  // $(".button").on("click", ".pin-trash", deletePin);
   fetchMap();
 });
 
@@ -24,12 +25,7 @@ const mapPins = (pin) => {
     map: map,
   });
 
-  const infowindow = new google.maps.InfoWindow({
-    content: `<h3>${pin.title}</h3>
-              <img src='${pin.image_url}'>
-              <p>${pin.description}</p>
-             `,
-  });
+  mapInfo(pin);
 
   marker.addListener("click", () => {
     infowindow.open({
@@ -37,6 +33,34 @@ const mapPins = (pin) => {
       map,
     });
   });
+};
+
+//For google map info//
+const mapInfo = (pin) => {
+  const content = `
+  <div class='info-window'>
+     <h3>${pin.title}</h3>
+     <img src='${pin.image_url}'>
+     <p>${pin.description}</p>
+     <div class='button'>
+       <img onClick="deletePin(${pin.id})" class='pin-trash' src='../docs/icons8-waste-50.png'>
+       <img class='pin-edit' src='../docs/icons8-pencil-50.png'>
+     </div>
+  </div>
+  `;
+
+  // google.maps.event.addListener(infowindow, () => {
+  //   const trashButton = document.getElementsByClassName("pin-trash");
+  //   if (trashButton) {
+  //     google.maps.event.addDomLinster(trashButton, "click", () => {
+  //       console.log("click");
+  //     });
+  //   }
+  // });
+
+  return (infowindow = new google.maps.InfoWindow({
+    content: content,
+  }));
 };
 
 //create HTML skeleton//
@@ -91,4 +115,11 @@ const renderMap = function (map) {
   $("#floating-menu").append($map);
 };
 
-//
+const deletePin = (pinId) => {
+  console.log(pinId);
+
+  $.get(`/pins/${pinId}/delete`).then(() => {
+    alert("pin is deleted");
+  });
+  fetchMap();
+};
