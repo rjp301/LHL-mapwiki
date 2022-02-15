@@ -32,9 +32,6 @@ const loadMaps = (data) => {
     .get("/maps" + path)
     .then(maps => renderMaps(maps))
     .catch(err => console.error(err.stack));
-
-  const $mapId = $('.card').attr('id');
-  console.log($mapId);
 };
 
 const renderMaps = (maps) => {
@@ -47,13 +44,23 @@ const renderMaps = (maps) => {
 };
 
 const createMapElement = (map) => {
+  const apiKey = readCookie('mapsAPIKey');
+  // const pins = $.get(`/pins/${map.id}`);
+  const thumbnail = 'https://maps.googleapis.com/maps/api/staticmap?' + $.param({
+    center: `${map.avg_lat},${map.avg_lng}`,
+    zoom: 12,
+    size: '400x600',
+    maptype: 'roadmap',
+    key: apiKey,
+  });
+
   const $mapCard = $(`
   <a class="card" href="/maps/${map.id}">
     <div class="card-icons">
       <i class="fa-solid fa-heart"></i>
       <i class="fa-solid fa-share"></i>
     </div>
-    <img src="https://i.stack.imgur.com/RdkOb.jpg" alt="">
+    <img src="${thumbnail}" alt="">
     <div class="card-text">
       <h3>${map.name}</h3>
       <p>${map.description}</p>
@@ -61,11 +68,11 @@ const createMapElement = (map) => {
   </a>
   `);
 
-  $mapCard.click(() => $.get(`/maps/${map.id}`));
+  // $mapCard.click(() => $.get(`/maps/${map.id}`));
 
   // Is map a favourite already?
 
-  const $favButton = $mapCard.find('.heart-icon');
+  // const $favButton = $mapCard.find('.heart-icon');
   // $favButton.toggle(
   //   () => {
   //     $.post('/favourites', {

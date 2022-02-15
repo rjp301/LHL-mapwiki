@@ -70,7 +70,7 @@
     padding: 8px;
     border-radius: 0 0 5px 5px;
 
-    background-color: transparentize($color: $col-base, $amount: 0.5);
+    background-color: transparentize($color: $col-base, $amount: 0.2);
   }
 
   .card-text * {

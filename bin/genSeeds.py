@@ -25,13 +25,13 @@ for index in range(50):
   location = fake.location_on_land()
   maps.at[index,"creator_id"] = str(randint(1,len(users)))
   maps.at[index,"date_created"] = add_quotes(f"{fake.past_date():%Y-%m-%d}")
-  maps.at[index,"name"] = add_quotes(", ".join(location[2:]))
+  maps.at[index,"name"] = add_quotes(location[2])
   maps.at[index,"description"] = add_quotes((fake.paragraph(2)))
   maps.at[index,"temp_lat"] = location[0]
   maps.at[index,"temp_lng"] = location[1]
 
 pins = pd.DataFrame()
-for index in range(200):
+for index in range(2000):
   map_index = randint(0,len(maps)-1)
   pins.at[index,"map_id"] = str(map_index + 1)
   pins.at[index,"title"] = add_quotes(fake.text(16)[:-1])

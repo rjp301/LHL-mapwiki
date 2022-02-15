@@ -1,11 +1,11 @@
 INSERT INTO users (name) VALUES
-('Jorge'),
-('Charles'),
-('Carl'),
-('Larry'),
-('Grant'),
+('Kayla'),
 ('Joseph'),
+('Michele'),
+('Justin'),
 ('John'),
-('Kelsey'),
-('John'),
-('Susan');
+('Maurice'),
+('Rachel'),
+('Dave'),
+('Nathaniel'),
+('Pamela');
