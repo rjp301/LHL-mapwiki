@@ -1,13 +1,8 @@
 $().ready(() => {
-<<<<<<< HEAD
-  // const $container = $('body > section');
-  bindNavButtons();
-=======
   bindNavButtons();
 
   const $container = $('main');
   $container.append($(`<div id="map-container"></div>`));
->>>>>>> mapIndex
 });
 
 const readCookie = (name) => {
@@ -69,16 +64,16 @@ const createMapElement = (map) => {
   // Is map a favourite already?
 
   const $favButton = $mapCard.find('.heart-icon');
-  $favButton.toggle(
-    () => {
-      $.post('/favourites', {
-        userId: readCookie('userId'),
-        mapId: map.id
-      })
-    },
-    () =>
+  // $favButton.toggle(
+  //   () => {
+  //     $.post('/favourites', {
+  //       userId: readCookie('userId'),
+  //       mapId: map.id
+  //     })
+  //   },
+  //   () =>
 
-  );
+  // );
   return $mapCard;
 };
 
