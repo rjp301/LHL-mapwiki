@@ -7,6 +7,9 @@ const mapId = pathname.split("/")[2];
 
 $(document).ready(() => {
   fetchMap();
+
+  // const $addPinButton = $('#floating-menu').children('.add-marker')
+  // $addPinButton.on('click', console.log('YO YO YO'));
 });
 
 
@@ -20,10 +23,15 @@ const loadMap = (mapData) => {
     mapTypeControl: false,
   });
 
-  map.addListener('click', (event) => {
-    addNewPin(event.latLng);
-  })
+  // Listen for any clicks on the map
+  map.addListener('click', onMapClick);
 };
+
+// Add a new marker when clicking map
+const onMapClick = (event) => {
+  const coordinates = event.latLng;
+  addNewPin(coordinates);
+}
 
 // Add a new marker to map
 const addNewPin = (position) => {
@@ -41,6 +49,7 @@ const addNewPin = (position) => {
     longitude: newPin.getPosition().lng()
   };
 
+  // New marker is automatically added to database
   $.ajax({
     url: "/pins/new",
     method: 'POST',
