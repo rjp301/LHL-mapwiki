@@ -19,7 +19,6 @@ const loadMap = (mapData) => {
 
 //For google map pins//
 const mapPins = (pin) => {
-  console.log(pin);
   const marker = new google.maps.Marker({
     position: { lat: pin.lat, lng: pin.lng },
     map: map,
@@ -42,9 +41,9 @@ const mapInfo = (pin) => {
      <h3>${pin.title}</h3>
      <img src='${pin.image_url}'>
      <p>${pin.description}</p>
-     <div class='button'>
+     <div class='info-buttons'>
        <img onClick="deletePin(${pin.id})" class='pin-trash' src='../docs/icons8-waste-50.png'>
-       <img class='pin-edit' src='../docs/icons8-pencil-50.png'>
+       <img onClick="editPin(${pin.id})" class='pin-edit' src='../docs/icons8-pencil-50.png'>
      </div>
   </div>
   `;
@@ -76,6 +75,19 @@ const createMapElement = (map) => {
       </ul>
     </section>
 
+      <form id='pin-form'>
+      <h3> Edit Pin</h3>
+        <label for="title" >Title</label>
+        <input type="text" id="title" />
+
+        <label for="img" >Image URL</label>
+        <input type="text" id="img" />
+
+        <label for="desc">Description</label>
+        <input type="text" id="desc" />
+        <button type="submit">Edit</button>
+      </form>
+
     <div id="map-buttons">
       <button class="add-marker">Add</button>
       <button class="share-btn">Share</button>
@@ -89,6 +101,7 @@ const pathname = window.location.pathname;
 const mapId = pathname.split("/")[2];
 
 const fetchMap = () => {
+  // $("#pin-form").slideUp();
   $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
 };
 
@@ -115,6 +128,7 @@ const renderMap = function (map) {
   $("#floating-menu").append($map);
 };
 
+//delete pin when click the trash icon//
 const deletePin = (pinId) => {
   console.log(pinId);
 
@@ -122,4 +136,10 @@ const deletePin = (pinId) => {
     alert("pin is deleted");
   });
   fetchMap();
+};
+
+//edit pin when click the pen icon
+const editPin = (pinId) => {
+  console.log("edit", pinId);
+  $("#pin-form").toggle();
 };

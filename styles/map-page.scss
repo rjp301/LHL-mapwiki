@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
 }
@@ -7,7 +8,7 @@ html, body {
   width: 100%;
 }
 
-#map-page-header{
+#map-page-header {
   position: fixed;
   z-index: 1;
   right: 2%;
@@ -40,4 +41,8 @@ html, body {
   flex-direction: column;
   justify-content: space-evenly;
   row-gap: 1em;
+}
+
+#pin-form {
+  background-color: whitesmoke;
 }
