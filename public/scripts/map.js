@@ -1,17 +1,14 @@
 //first initialize the map as a global valuable//
 let map;
 
+//get mapid from route/
+const pathname = window.location.pathname;
+const mapId = pathname.split("/")[2];
+
 $(document).ready(() => {
   fetchMap();
 });
 
-// Add a new marker to map on click
-const addNewMarker = (position) => {
-  const marker = new google.maps.Marker({
-    position,
-    map
-  })
-};
 
 //Load fullsize google map//
 const loadMap = (mapData) => {
@@ -24,8 +21,33 @@ const loadMap = (mapData) => {
   });
 
   map.addListener('click', (event) => {
-    addNewMarker(event.latLng);
+    addNewPin(event.latLng);
   })
+};
+
+// Add a new marker to map
+const addNewPin = (position) => {
+  const newPin = new google.maps.Marker({
+    position,
+    map,
+  });
+
+  const pinData = {
+    map_id: mapId,
+    title: "Untitled pin",
+    description: 'Enter description',
+    image_url: 'Image URL',
+    latitude: newPin.getPosition().lat(),
+    longitude: newPin.getPosition().lng()
+  };
+
+  $.ajax({
+    url: "/pins/new",
+    method: 'POST',
+    data: pinData
+  }).then(() => {
+      console.log('new pin added!');
+  }).catch((err) => console.log('OOPSIE DOOPSIE', err.message));
 };
 
 //For google map pins//
@@ -72,9 +94,7 @@ const createMapElement = (map) => {
   return $map;
 };
 
-//get mapid from route/
-const pathname = window.location.pathname;
-const mapId = pathname.split("/")[2];
+
 
 const fetchMap = () => {
   $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
@@ -82,7 +102,7 @@ const fetchMap = () => {
 
 const renderMap = function (map) {
   const fetchPins = (mapId) => {
-    $.get(`/pins/${mapId}`).then((pins) => {
+    $.get(`/pins/bymap/${mapId}`).then((pins) => {
       renderPins(pins);
     });
   };
