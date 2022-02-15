@@ -1,8 +1,6 @@
 $().ready(() => {
-  const $container = $('body > section');
-
+  // const $container = $('body > section');
   bindNavButtons();
-  $container.append($(`<div id="map-container"></div>`));
 });
 
 const bindNavButtons = () => {
@@ -19,6 +17,9 @@ const loadMaps = (data) => {
     .get("/maps" + path)
     .then(maps => renderMaps(maps))
     .catch(err => console.error(err.stack));
+
+    const $mapId = $('.card').attr('id');
+    console.log($mapId)
 };
 
 const renderMaps = (maps) => {
@@ -28,17 +29,18 @@ const renderMaps = (maps) => {
     const $map = createMapElement(map);
     $mapContainer.append($map);
   }
-};
+}
+
 
 const createMapElement = (map) => {
   return $(`
-  <div class="card" >
+  <div class="card">
      <span class="heart-icon"><i class="fa-solid fa-heart"></i></span>
      <img class="card-img-top" src="https://image.shutterstock.com/image-vector/urban-vector-city-map-johannesburg-600w-1757922890.jpg" alt="Card image cap">
      <div class="card-body">
      <h6 class="card-title">${map.name}</h6>
      <p class="card-text">${map.description}</p>
-     <a href="#" class="btn btn-info  btn-block">Map Page</a>
+     <a href="maps/${map.id}" class="btn btn-info  btn-block">Map Page</a>
   </div>`);
 };
 
