@@ -70,4 +70,5 @@ module.exports.addPinToMap = (map_id, pin) => {
 module.exports = {
   getPinsByMap,
   deletePin,
+  editPin,
 };

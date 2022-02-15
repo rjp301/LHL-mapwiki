@@ -2,7 +2,7 @@
 let map;
 
 $(document).ready(() => {
-  // $(".button").on("click", ".pin-trash", deletePin);
+  $("#pin-form").on("submit", deletePin);
   fetchMap();
 });
 
@@ -48,15 +48,6 @@ const mapInfo = (pin) => {
   </div>
   `;
 
-  // google.maps.event.addListener(infowindow, () => {
-  //   const trashButton = document.getElementsByClassName("pin-trash");
-  //   if (trashButton) {
-  //     google.maps.event.addDomLinster(trashButton, "click", () => {
-  //       console.log("click");
-  //     });
-  //   }
-  // });
-
   return (infowindow = new google.maps.InfoWindow({
     content: content,
   }));
@@ -74,20 +65,6 @@ const createMapElement = (map) => {
       <ul class='pin-list'>
       </ul>
     </section>
-
-      <form id='pin-form'>
-      <h3> Edit Pin</h3>
-        <label for="title" >Title</label>
-        <input type="text" id="title" />
-
-        <label for="img" >Image URL</label>
-        <input type="text" id="img" />
-
-        <label for="desc">Description</label>
-        <input type="text" id="desc" />
-        <button type="submit">Edit</button>
-      </form>
-
     <div id="map-buttons">
       <button class="add-marker">Add</button>
       <button class="share-btn">Share</button>
@@ -130,8 +107,6 @@ const renderMap = function (map) {
 
 //delete pin when click the trash icon//
 const deletePin = (pinId) => {
-  console.log(pinId);
-
   $.get(`/pins/${pinId}/delete`).then(() => {
     alert("pin is deleted");
   });
