@@ -1,7 +1,7 @@
 require("dotenv").config();
-const pinQueries = require('./pin-queries');
+const mapQueries = require('./map-queries');
 
-pinQueries
-  .deletePin(5)
+mapQueries
+  .getEditMapsByUserId(4)
   .then(res => console.log(res));
 

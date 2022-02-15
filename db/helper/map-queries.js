@@ -5,8 +5,16 @@ const db = require("../../lib/db");
  * @return {Promise<{}>} A promise to the user.
  */
 module.exports.getMaps = () => {
+  const queryString = `
+  SELECT
+    maps.*,
+    avg(pins.lat) AS avg_lat,
+    avg(pins.lng) AS avg_lng
+  FROM maps
+  JOIN pins ON pins.map_id = maps.id
+  GROUP BY maps.id;`;
   return db
-    .query(`SELECT * FROM maps;`)
+    .query(queryString)
     .then((res) => res.rows)
     .catch((err) => console.error(err.stack));
 };
@@ -18,8 +26,14 @@ module.exports.getMaps = () => {
  */
 module.exports.getMapById = (id) => {
   const queryString = `
-  SELECT * FROM maps
-  WHERE id = $1;`;
+  SELECT
+    maps.*,
+    avg(pins.lat) AS avg_lat,
+    avg(pins.lng) AS avg_lng
+  FROM maps
+  JOIN pins ON pins.map_id = maps.id
+  WHERE maps.id = $1
+  GROUP BY maps.id;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
@@ -34,9 +48,15 @@ module.exports.getMapById = (id) => {
  */
 module.exports.getFavMapsByUserId = (id) => {
   const queryString = `
-  SELECT * FROM maps
+  SELECT
+    maps.*,
+    avg(pins.lat) AS avg_lat,
+    avg(pins.lng) AS avg_lng
+  FROM maps
+  JOIN pins ON pins.map_id = maps.id
   JOIN favourites ON favourites.map_id = maps.id
-  WHERE favourites.user_id = $1;`;
+  WHERE favourites.user_id = $1
+  GROUP BY maps.id;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
@@ -51,10 +71,16 @@ module.exports.getFavMapsByUserId = (id) => {
  */
 module.exports.getEditMapsByUserId = (id) => {
   const queryString = `
-  SELECT * FROM maps
+  SELECT
+    maps.*,
+    avg(pins.lat) AS avg_lat,
+    avg(pins.lng) AS avg_lng
+  FROM maps
+  JOIN pins ON pins.map_id = maps.id
   JOIN map_editors ON map_editors.map_id = maps.id
   WHERE map_editors.user_id = $1
-  OR maps.creator_id = $1;`;
+  OR maps.creator_id = $1
+  GROUP BY maps.id;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
