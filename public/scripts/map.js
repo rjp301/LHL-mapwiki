@@ -5,7 +5,15 @@ $(document).ready(() => {
   fetchMap();
 });
 
-//For fulsize google map//
+// Add a new marker to map on click
+const addNewMarker = (position) => {
+  const marker = new google.maps.Marker({
+    position,
+    map
+  })
+};
+
+//Load fullsize google map//
 const loadMap = (mapData) => {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 12,
@@ -14,11 +22,15 @@ const loadMap = (mapData) => {
     fullscreenControl: false,
     mapTypeControl: false,
   });
+
+  map.addListener('click', (event) => {
+    addNewMarker(event.latLng);
+  })
 };
 
 //For google map pins//
 const mapPins = (pin) => {
-  console.log(pin);
+  // console.log(pin);
   const marker = new google.maps.Marker({
     position: { lat: pin.lat, lng: pin.lng },
     map: map,
