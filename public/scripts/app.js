@@ -82,35 +82,37 @@ const createMapElement = (map, favourites) => {
   </a>
   `);
 
-  const addFavourite = () => {
-    $.post('/favourites', {
-      userId: readCookie('userId'),
-      mapId: map.id
-    });
+  const toggleFavourite = function(event) {
+    // click event handler tied to heart icon
+    event.preventDefault();
+    console.log($(this));
+    if ($(this).hasClass('red')) {
+      console.log(`Removing ${map.name} from favourites...`);
+      $(this).removeClass('red');
+      $.post('/favourites/delete', {
+        userId: readCookie('userId'),
+        mapId: map.id
+      });
+    } else {
+      console.log(`Adding ${map.name} to favourites...`);
+      $(this).addClass('red');
+      $.post('/favourites', {
+        userId: readCookie('userId'),
+        mapId: map.id
+      });
+    }
   };
-
-  const removeFavourite = () => {
-    $.post('/favourites/delete', {
-      userId: readCookie('userId'),
-      mapId: map.id
-    });
-  };
-
 
   const inFavourites = (favourites, map) => {
     const favIds = favourites.map(i => i.id); // Strip favourites down to just id
     return favIds.includes(map.id); // if current map in favourites it is favourited
   };
 
+  const $favButton = $mapCard.find('.fa-heart');
+  $favButton.click(toggleFavourite);
+
   if (favourites && inFavourites(favourites, map)) {
-    const $heartBtn = $mapCard.find('.fa-heart');
-    $heartBtn.addClass('red');
-
-    $heartBtn.click(() => {
-      removeFavourite();
-      $(this).off('click').click()
-    });
-
+    $favButton.addClass('red');
   }
 
   return $mapCard;
