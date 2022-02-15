@@ -1,12 +1,19 @@
 //first initialize the map as a global valuable//
 let map;
 
+//get mapid from route/
+const pathname = window.location.pathname;
+const mapId = pathname.split("/")[2];
+
 $(document).ready(() => {
   $("#pin-form").on("submit", deletePin);
   fetchMap();
+
+  // const $addPinButton = $('#floating-menu').children('.add-marker')
+  // $addPinButton.on('click', console.log('YO YO YO'));
 });
 
-//For fulsize google map//
+//Load fullsize google map//
 const loadMap = (mapData) => {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 12,
@@ -15,6 +22,43 @@ const loadMap = (mapData) => {
     fullscreenControl: false,
     mapTypeControl: false,
   });
+
+  // Listen for any clicks on the map
+  map.addListener("click", onMapClick);
+};
+
+// Add a new marker when clicking map
+const onMapClick = (event) => {
+  const coordinates = event.latLng;
+  addNewPin(coordinates);
+};
+
+// Add a new marker to map
+const addNewPin = (position) => {
+  const newPin = new google.maps.Marker({
+    position,
+    map,
+  });
+
+  const pinData = {
+    map_id: mapId,
+    title: "Untitled pin",
+    description: "Enter description",
+    image_url: "Image URL",
+    latitude: newPin.getPosition().lat(),
+    longitude: newPin.getPosition().lng(),
+  };
+
+  // New marker is automatically added to database
+  $.ajax({
+    url: "/pins/new",
+    method: "POST",
+    data: pinData,
+  })
+    .then(() => {
+      console.log("new pin added!");
+    })
+    .catch((err) => console.log("OOPSIE DOOPSIE", err.message));
 };
 
 //For google map pins//
@@ -59,7 +103,7 @@ const createMapElement = (map) => {
   const mapDesc = map.description;
   const $map = `
     <section id="list-of-locations">
-      <button id="back-to-maps">Back to maps</button>
+      <a id="back-to-maps" href="/">Back to maps</a>
       <h2>${mapName}</h2>
       <p>${mapDesc}</p>
       <ul class='pin-list'>
@@ -73,10 +117,6 @@ const createMapElement = (map) => {
   return $map;
 };
 
-//get mapid from route/
-const pathname = window.location.pathname;
-const mapId = pathname.split("/")[2];
-
 const fetchMap = () => {
   // $("#pin-form").slideUp();
   $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
@@ -84,7 +124,7 @@ const fetchMap = () => {
 
 const renderMap = function (map) {
   const fetchPins = (mapId) => {
-    $.get(`/pins/${mapId}`).then((pins) => {
+    $.get(`/pins/bymap/${mapId}`).then((pins) => {
       renderPins(pins);
     });
   };

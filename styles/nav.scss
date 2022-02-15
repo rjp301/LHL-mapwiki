@@ -1,12 +1,21 @@
+@import "_variables";
+
 nav {
+
+  position: fixed;
+  top: 0;
+  width: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  z-index: 1;
+
   div.nav {
-    background-color: #94daff;
+    background-color: $col-base;
+    color: $col-accent1;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 0 30px;
 
     div * {
       margin: 0.5rem;
@@ -24,14 +33,37 @@ nav {
 
     button {
       border: none;
-      padding: 0.2rem 1rem;
-      background-color: #b983ff;
+      padding: 0.5rem 1.5rem;
+      border-radius: 5px;
+      font-weight: bold;
+
+      box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+      transition: 0.3s;
+
+      &:hover {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transform: scale(1.02);
+      }
+    }
+
+    #username {
+      color: $col-mid2;
+      font-weight: bold;
     }
   }
-
-  div.maps-nav {
-    background-color: #7db5d3;
+  .btnA {
+    background-color: $col-mid2;
+    color: $col-base;
   }
+
+  .btnB {
+    background-color: $col-mid1;
+    color: $col-base;
+  }
+}
+
+main {
+  padding-top: 104px;
 }
 
 //   .__logo {

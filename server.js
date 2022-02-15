@@ -36,6 +36,7 @@ app.use(express.static("public"));
 app.get("/login", (req, res) => {
   console.log(process.env.USER_ID);
   res.cookie('userId', process.env.USER_ID);
+  res.cookie('mapsAPIKey', process.env.API_KEY);
   res.redirect("/");
 });
 

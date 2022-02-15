@@ -53,18 +53,39 @@ const editPin = (id, pin) => {
  * @returns {Promise<{}>}
  **/
 
-module.exports.addPinToMap = (map_id, pin) => {
-  const keys = Object.keys(pin);
+// module.exports.addPinToMap = (map_id, pin) => {
+//   const keys = Object.keys(pin);
+//   const queryString = `
+//   INSERT INTO pins (map_id, ${keys.join(", ")})
+//   VALUES ($1, ${keys.map((_, i) => `$${i + 2}`).join(", ")})
+//   RETURNING *`;
+//   const queryValues = [map_id];
+//   queryValues.push(...keys.map((i) => pin[i]));
+//   return db
+//     .query(queryString, queryValues)
+//     .then((res) => res.rows[0])
+//     .catch((err) => console.error(err.stack));
+// };
+
+module.exports.addPinToMap = (pin) => {
+  const { map_id, title, description, image_url, latitude, longitude } = pin;
+
   const queryString = `
-  INSERT INTO pins (map_id, ${keys.join(", ")})
-  VALUES ($1, ${keys.map((_, i) => `$${i + 2}`).join(", ")})
-  RETURNING *`;
-  const queryValues = [map_id];
-  queryValues.push(...keys.map((i) => pin[i]));
+    INSERT INTO pins
+      (map_id, title, description, image_url, lat, lng)
+    VALUES
+      ($1, $2, $3, $4, $5, $6)
+    RETURNING *
+  `;
+  const queryValues = [Number(map_id), title, description, image_url, latitude, longitude];
+
   return db
     .query(queryString, queryValues)
-    .then((res) => res.rows[0])
-    .catch((err) => console.error(err.stack));
+    .then((result) => result.rows[0])
+    .catch((err) => {
+      console.log(err.message);
+      return null;
+    })
 };
 
 module.exports = {

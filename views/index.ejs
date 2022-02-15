@@ -2,12 +2,13 @@
 <html lang="en">
   <head>
     <!-- Bootstrap CSS -->
-    <link
+    <!-- <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
       crossorigin="anonymous"
-    />
+    /> -->
+
     <!-- font awesome -->
     <link
       rel="stylesheet"
@@ -16,39 +17,57 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <title>Wiki Map</title>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;600&display=swap" rel="stylesheet">
+
+    <title>Cheese Map</title>
+
+    <!-- Vendor CSS -->
     <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
     <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+
+    <!-- App CSS -->
     <link rel="stylesheet" href="/styles/main.css" type="text/css" />
     <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
     <link rel="stylesheet" href="/styles/nav.css" type="text/css" />
-    <link rel="stylesheet" href="/styles/map-lists.css" type="text/css" />
+    <link rel="stylesheet" href="/styles/map-cards.css" type="text/css" />
 
     <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
   </head>
 
   <body>
-    <nav class="nav">
-      <div class="navbar__top">
-        <span class="nav__logo" href="#">MapWiki</span>
-        <div class="nav__right">
-          <span> username </span>
-          <button class="nav__button">Login</button>
+    <nav>
+      <div class="nav-top nav">
+        <div class="nav-group">
+          <span><i class="fa-solid fa-map"></i></span>
+          <h2 href="#">Cheese Map</h2>
+        </div>
+        <div class="nav-group">
+          <span id="username"> username </span>
+          <button id="login-button" class="btnA">Login</button>
         </div>
       </div>
-      <ul class="navbar__nav">
-        <li class="nav__item-1 nav-link" href="#">Create New Map</li>
+      <div class="maps-nav nav">
+        <div class="nav-group">
+          <button id="maps-new" class="btnA">Create new map</button>
+        </div>
+        <div class="nav-group">
+          <button id="maps-view-all" class="btnB">All Maps</button>
+          <button id="maps-view-edit" class="btnB">My Maps</button>
+          <button id="maps-view-fav" class="btnB">My Favourites</button>
 
-        <li class="nav__item-2 nav-link" href="#">All Maps</li>
-        <li class="nav__item-3 nav-link" href="#">My Maps</li>
-        <li class="nav__item-4 nav-link" href="#">My favourites</li>
-      </ul>
+        </div>
+      </div>
     </nav>
-
-    <section class="card-lists">
-      <div class="map-container"></div>
-    </section>
+    <main>
+      <!-- ALL CONTENT GOES HERE -->
+      <section id="map-container">
+      </section>
+      <section id="view-map-page"></section>
+    </main>
   </body>
 </html>
