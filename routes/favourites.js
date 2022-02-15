@@ -9,7 +9,7 @@ router.post('/', (req, res) => {
     .catch(err => console.error(err.stack));
 });
 
-router.post('/:id/delete', (req, res) => {
+router.post('/delete', (req, res) => {
   // remove editor
   favouritesQueries
     .removeMapFromFavourites(req.body.userId, req.body.mapId)

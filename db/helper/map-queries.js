@@ -48,7 +48,7 @@ module.exports.getMapById = (id) => {
  */
 module.exports.getFavMapsByUserId = (id) => {
   const queryString = `
-  SELECT
+  SELECT DISTINCT
     maps.*,
     avg(pins.lat) AS avg_lat,
     avg(pins.lng) AS avg_lng
@@ -71,7 +71,7 @@ module.exports.getFavMapsByUserId = (id) => {
  */
 module.exports.getEditMapsByUserId = (id) => {
   const queryString = `
-  SELECT
+  SELECT DISTINCT
     maps.*,
     avg(pins.lat) AS avg_lat,
     avg(pins.lng) AS avg_lng
