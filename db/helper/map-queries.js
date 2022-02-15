@@ -12,7 +12,8 @@ module.exports.getMaps = () => {
     avg(pins.lng) AS avg_lng
   FROM maps
   JOIN pins ON pins.map_id = maps.id
-  GROUP BY maps.id;`;
+  GROUP BY maps.id
+  ORDER BY maps.name;`;
   return db
     .query(queryString)
     .then((res) => res.rows)
@@ -33,7 +34,8 @@ module.exports.getMapById = (id) => {
   FROM maps
   JOIN pins ON pins.map_id = maps.id
   WHERE maps.id = $1
-  GROUP BY maps.id;`;
+  GROUP BY maps.id
+  ORDER BY maps.name;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
@@ -56,7 +58,8 @@ module.exports.getFavMapsByUserId = (id) => {
   JOIN pins ON pins.map_id = maps.id
   JOIN favourites ON favourites.map_id = maps.id
   WHERE favourites.user_id = $1
-  GROUP BY maps.id;`;
+  GROUP BY maps.id
+  ORDER BY maps.name;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
