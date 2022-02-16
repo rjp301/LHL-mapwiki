@@ -7,10 +7,14 @@ const mapId = pathname.split("/")[2];
 
 $(document).ready(() => {
   fetchMap();
-
   // const $addPinButton = $('#floating-menu').children('.add-marker')
   // $addPinButton.on('click', console.log('YO YO YO'));
 });
+
+const reloadSidebar = () => {
+  $(".pin-list").empty();
+  fetchPins(mapId);
+};
 
 
 //Load fullsize google map//
@@ -40,6 +44,9 @@ const addNewPin = (position) => {
     map,
   });
 
+  //fun little bounce animation: for later use :)
+  // newPin.setAnimation(google.maps.Animation.BOUNCE);
+
   const pinData = {
     map_id: mapId,
     title: "Untitled pin",
@@ -55,13 +62,12 @@ const addNewPin = (position) => {
     method: 'POST',
     data: pinData
   }).then(() => {
-      console.log('new pin added!');
+      reloadSidebar();
   }).catch((err) => console.log('OOPSIE DOOPSIE', err.message));
 };
 
 //For google map pins//
 const mapPins = (pin) => {
-  // console.log(pin);
   const marker = new google.maps.Marker({
     position: { lat: pin.lat, lng: pin.lng },
     map: map,
@@ -109,21 +115,20 @@ const fetchMap = () => {
   $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
 };
 
+const renderPins = (pins) => {
+  for (const pin of pins) {
+    mapPins(pin);
+    $(".pin-list").prepend(`<li>${pin.title}</li>`);
+  }
+};
+
+const fetchPins = (mapId) => {
+  $.get(`/pins/bymap/${mapId}`).then((pins) => {
+    renderPins(pins);
+  });
+};
+
 const renderMap = function (map) {
-  const fetchPins = (mapId) => {
-    $.get(`/pins/bymap/${mapId}`).then((pins) => {
-      renderPins(pins);
-    });
-  };
-
-  const renderPins = (pins) => {
-    for (const pin of pins) {
-      mapPins(pin);
-
-      $(".pin-list").prepend(`<li>${pin.title}</li>`);
-    }
-  };
-
   loadMap(map);
   fetchPins(map.id);
 
