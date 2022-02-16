@@ -10,7 +10,6 @@ const mapId = pathname.split("/")[2];
 $(document).ready(() => {
   fetchMap();
   selectPinOnMap();
-
 });
 
 // show pin position on map when selected from side menu
@@ -20,6 +19,7 @@ const selectPinOnMap = () => {
     for (let i = 0; i < $listOfPins.length; i++) {
       $($listOfPins[i]).on("click", () => {
         showSelectedPinOnMap(i);
+        // work in progress -- OPTION TO HIGHLIGHT THE SELECTED TEXT WHEN PIN IS ACTIVE
         // if ($($listOfPins[i]).hasClass("green")) {
         //   $($listOfPins[i]).removeClass("green");
         // } else {
@@ -31,7 +31,7 @@ const selectPinOnMap = () => {
 }
 
 const editMapInfo = () => {
-
+  $("#floating-menu")
 }
 
 // bounce and show selected pin on map
