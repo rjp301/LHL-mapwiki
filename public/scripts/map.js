@@ -10,6 +10,50 @@ const mapId = pathname.split("/")[2];
 $(document).ready(() => {
   fetchMap();
   selectPinOnMap();
+
+  // edit button on click, title/desc html becomes editable, edit becomes save button
+  $("#floating-menu").on("click", ".inner-editmap-btn", function () {
+
+    const $editButton = $(this);
+    const $mapTitle = $("#list-of-locations > h2");
+    const $mapDesc = $("#list-of-locations > p");
+    // console.log($mapTitle.text(), $mapDesc.text())
+
+        //toggle between "edit" and "save changes" when clicking edit button
+    $editButton.toggleClass("edit-active");
+    if ($editButton.hasClass("edit-active")) {
+      $editButton.text("Save Changes");
+      $mapTitle.attr("contenteditable", "true");
+      $mapTitle.css("background-color", "yellow");
+      $mapDesc.attr("contenteditable", "true");
+      $mapDesc.css("background-color", "yellow");
+    } else {
+      $editButton.text("Edit");
+      $mapTitle.attr("contenteditable", "false");
+      $mapTitle.css("background-color", "inherit");
+      $mapDesc.attr("contenteditable", "false");
+      $mapDesc.css("background-color", "inherit");
+    }
+  // save button on click
+  //$.ajax( type: post, url: /maps/:mapid, data: mapid, body )
+  if ($editButton.text() === "Edit") {
+    const mapData = {
+      name: $mapTitle.text(),
+      description: $mapDesc.text(),
+    }
+    console.log("sending...", mapData)
+    $.ajax({
+      url: `/maps/${mapId}`,
+      method: "POST",
+      data: mapData,
+    })
+  }
+  // then toggle back to edit button, editable = false.
+
+
+  })
+
+
 });
 
 // show pin position on map when selected from side menu
@@ -30,9 +74,16 @@ const selectPinOnMap = () => {
   })
 }
 
-const editMapInfo = () => {
-  $("#floating-menu")
-}
+// const editMapInfo = () => {
+//     const $menu = $('#floating-menu');
+
+//       console.log($($menu).children())
+
+//     // $menu.on("click", "h2", () => {
+
+//     // })
+
+// }
 
 // bounce and show selected pin on map
 const showSelectedPinOnMap = function(index) {
@@ -190,8 +241,9 @@ const createMapElement = (map) => {
       </ul>
     </section>
     <div id="map-buttons">
-      <button class="add-marker">Add</button>
-      <button class="share-btn">Share</button>
+      <button class="inner-editmap-btn">Edit</button>
+      <button class="inner-fav-btn">Fav</button>
+      <button class="inner-share-btn">Share</button>
     </div>
  `;
   return $map;
