@@ -28,24 +28,38 @@ const bindNavButtons = () => {
 const loadMaps = (data) => {
   const path = data.data.path;
   console.log(`Fetching maps from /maps${path}...`);
-  $
-    .get("/maps" + path)
-    .then(maps => renderMaps(maps))
+
+  // need to fetch filtered maps but also favourited maps
+  // to compare and colour heart so need two promises
+  const p1 = $.get("/maps" + path);
+  const p2 = $.get('/maps/favourites');
+
+  // When both promises resolve pass both values into rendermaps
+  Promise
+    .all([p1, p2])
+    .then(values => {
+      console.log(values);
+      renderMaps(...values);
+    })
     .catch(err => console.error(err.stack));
 };
 
-const renderMaps = (maps) => {
+const renderMaps = (maps, favourites) => {
   const $mapContainer = $('#map-container');
+  // const favourites = $.get('/maps/favourites');
+  // console.log(favourites);
   $mapContainer.empty();
   for (const map of maps) {
-    const $map = createMapElement(map);
+    const $map = createMapElement(map, favourites);
     $mapContainer.append($map);
   }
 };
 
-const createMapElement = (map) => {
+const createMapElement = (map, favourites) => {
   const apiKey = readCookie('mapsAPIKey');
+
   // const pins = $.get(`/pins/${map.id}`);
+
   const thumbnail = 'https://maps.googleapis.com/maps/api/staticmap?' + $.param({
     center: `${map.avg_lat},${map.avg_lng}`,
     zoom: 12,
@@ -62,27 +76,54 @@ const createMapElement = (map) => {
     </div>
     <img src="${thumbnail}" alt="">
     <div class="card-text">
+      <div class="card-url">localhost:8080/maps/${map.id}</div>
       <h3>${map.name}</h3>
       <p>${map.description}</p>
     </div>
   </a>
   `);
 
-  // $mapCard.click(() => $.get(`/maps/${map.id}`));
+  const $shareURL = $mapCard.find('.card-url').hide();
 
-  // Is map a favourite already?
+  const toggleFavourite = function(event) {
+    // click event handler tied to heart icon
+    event.preventDefault();
+    console.log($(this));
+    if ($(this).hasClass('red')) {
+      console.log(`Removing ${map.name} from favourites...`);
+      $(this).removeClass('red');
+      $.post('/favourites/delete', {
+        userId: readCookie('userId'),
+        mapId: map.id
+      });
+    } else {
+      console.log(`Adding ${map.name} to favourites...`);
+      $(this).addClass('red');
+      $.post('/favourites', {
+        userId: readCookie('userId'),
+        mapId: map.id
+      });
+    }
+  };
 
-  // const $favButton = $mapCard.find('.heart-icon');
-  // $favButton.toggle(
-  //   () => {
-  //     $.post('/favourites', {
-  //       userId: readCookie('userId'),
-  //       mapId: map.id
-  //     })
-  //   },
-  //   () =>
+  const toggleShare = function(event) {
+    event.preventDefault();
+    $mapCard.find('.card-url').slideToggle();
+  };
 
-  // );
+  const inFavourites = (favourites, map) => {
+    const favIds = favourites.map(i => i.id); // Strip favourites down to just id
+    return favIds.includes(map.id); // if current map in favourites it is favourited
+  };
+
+  const $favButton = $mapCard.find('.fa-heart');
+  $favButton.click(toggleFavourite);
+  $mapCard.find('.fa-share').click(toggleShare);
+
+  if (favourites && inFavourites(favourites, map)) {
+    $favButton.addClass('red');
+  }
+
   return $mapCard;
 };
 
