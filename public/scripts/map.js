@@ -223,6 +223,7 @@ const renderMap = function (map) {
   $("#floating-menu").append($map);
 };
 
+//delete pin when click the trash icon//
 const deletePin = (pinId) => {
   $.get(`/pins/${pinId}/delete`).then(() => {
     alert("pin is deleted");
@@ -250,4 +251,4 @@ const deletePin = (pinId) => {
     //   infowindow.close();
     //   infowindowIsOpen = false;
     // } else if (!infowindowIsOpen) {
-//delete pin when click the trash icon//
+
