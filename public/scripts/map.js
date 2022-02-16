@@ -9,8 +9,12 @@ const mapId = pathname.split("/")[2];
 
 $(document).ready(() => {
   fetchMap();
+  selectPinOnMap();
 
-  // show pin position on map when selected from side menu
+});
+
+// show pin position on map when selected from side menu
+const selectPinOnMap = () => {
   $('#floating-menu').on('mouseover', 'li', function () {
     const $listOfPins = $('ul').children();
     for (let i = 0; i < $listOfPins.length; i++) {
@@ -24,7 +28,11 @@ $(document).ready(() => {
       })
     }
   })
-});
+}
+
+const editMapInfo = () => {
+
+}
 
 // bounce and show selected pin on map
 const showSelectedPinOnMap = function(index) {
