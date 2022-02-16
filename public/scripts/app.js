@@ -1,8 +1,9 @@
+/* global document
+
+*/
+
 $().ready(() => {
   bindNavButtons();
-
-  const $container = $('main');
-  $container.append($(`<div id="map-container"></div>`));
 });
 
 const readCookie = (name) => {
@@ -19,10 +20,20 @@ const readCookie = (name) => {
 
 const bindNavButtons = () => {
   $('#maps-new');
-  $('#login-button').click(() => $.get('/login'));
+  $('#login-button').click(login);
   $('#maps-view-all').click({ path: '/' }, loadMaps);
   $('#maps-view-fav').click({ path: '/favourites' }, loadMaps);
   $('#maps-view-edit').click({ path: '/editable' },loadMaps);
+};
+
+const login = () => {
+  const userId = readCookie('userId');
+  $.get('/login');
+  $
+    .get(`/users/${userId}`)
+    .then(name => {
+      $('#username').text(name)
+    });
 };
 
 const loadMaps = (data) => {
@@ -46,19 +57,17 @@ const loadMaps = (data) => {
 
 const renderMaps = (maps, favourites) => {
   const $mapContainer = $('#map-container');
-  // const favourites = $.get('/maps/favourites');
-  // console.log(favourites);
   $mapContainer.empty();
+
   for (const map of maps) {
-    const $map = createMapElement(map, favourites);
+    const isFav = favourites.map(i => i.id).includes(map.id);
+    const $map = createMapElement(map, isFav);
     $mapContainer.append($map);
   }
 };
 
-const createMapElement = (map, favourites) => {
+const createMapElement = (map, isFav) => {
   const apiKey = readCookie('mapsAPIKey');
-
-  // const pins = $.get(`/pins/${map.id}`);
 
   const thumbnail = 'https://maps.googleapis.com/maps/api/staticmap?' + $.param({
     center: `${map.avg_lat},${map.avg_lng}`,
@@ -82,8 +91,6 @@ const createMapElement = (map, favourites) => {
     </div>
   </a>
   `);
-
-  const $shareURL = $mapCard.find('.card-url').hide();
 
   const toggleFavourite = function(event) {
     // click event handler tied to heart icon
@@ -111,17 +118,13 @@ const createMapElement = (map, favourites) => {
     $mapCard.find('.card-url').slideToggle();
   };
 
-  const inFavourites = (favourites, map) => {
-    const favIds = favourites.map(i => i.id); // Strip favourites down to just id
-    return favIds.includes(map.id); // if current map in favourites it is favourited
-  };
-
-  const $favButton = $mapCard.find('.fa-heart');
-  $favButton.click(toggleFavourite);
+  // Bind actions to buttons
+  $mapCard.find('.card-url').hide();
+  $mapCard.find('.fa-heart').click(toggleFavourite);
   $mapCard.find('.fa-share').click(toggleShare);
 
-  if (favourites && inFavourites(favourites, map)) {
-    $favButton.addClass('red');
+  if (isFav) {
+    $mapCard.find('.fa-heart').addClass('red');
   }
 
   return $mapCard;
