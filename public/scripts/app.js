@@ -76,11 +76,14 @@ const createMapElement = (map, favourites) => {
     </div>
     <img src="${thumbnail}" alt="">
     <div class="card-text">
+      <div class="card-url">localhost:8080/maps/${map.id}</div>
       <h3>${map.name}</h3>
       <p>${map.description}</p>
     </div>
   </a>
   `);
+
+  const $shareURL = $mapCard.find('.card-url').hide();
 
   const toggleFavourite = function(event) {
     // click event handler tied to heart icon
@@ -103,6 +106,11 @@ const createMapElement = (map, favourites) => {
     }
   };
 
+  const toggleShare = function(event) {
+    event.preventDefault();
+    $mapCard.find('.card-url').slideToggle();
+  };
+
   const inFavourites = (favourites, map) => {
     const favIds = favourites.map(i => i.id); // Strip favourites down to just id
     return favIds.includes(map.id); // if current map in favourites it is favourited
@@ -110,6 +118,7 @@ const createMapElement = (map, favourites) => {
 
   const $favButton = $mapCard.find('.fa-heart');
   $favButton.click(toggleFavourite);
+  $mapCard.find('.fa-share').click(toggleShare);
 
   if (favourites && inFavourites(favourites, map)) {
     $favButton.addClass('red');
