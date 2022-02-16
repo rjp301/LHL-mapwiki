@@ -67,9 +67,10 @@ const mapPins = (pin) => {
     map: map,
   });
 
-  mapInfo(pin);
-
   marker.addListener("click", () => {
+    const infoWindow = mapInfo(pin);
+    console.log(infoWindow);
+
     infowindow.open({
       anchor: marker,
       map,
@@ -77,8 +78,7 @@ const mapPins = (pin) => {
   });
 };
 
-//For google map info//
-const mapInfo = (pin) => {
+const generateContent = (pin) => {
   const content = `
   <div class='info-window'>
      <h3>${pin.title}</h3>
@@ -90,10 +90,27 @@ const mapInfo = (pin) => {
      </div>
   </div>
   `;
+  return content;
+};
 
+//For google map info//
+const mapInfo = (pin) => {
   return (infowindow = new google.maps.InfoWindow({
-    content: content,
+    content: generateContent(pin),
   }));
+};
+
+//edit pin when click the pen icon
+const editPin = (pinId) => {
+  const editContent = `
+  <form >
+     <input type="text" placeoholder="title">
+     <input type="text" placeoholder="description">
+    <button>Edit</button>
+  </form>`;
+  console.log("edit", pinId);
+  $(".info-window").empty();
+  $(".info-window").append(editContent);
 };
 
 //create HTML skeleton//
@@ -117,7 +134,6 @@ const createMapElement = (map) => {
 };
 
 const fetchMap = () => {
-  // $("#pin-form").slideUp();
   $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
 };
 
@@ -150,10 +166,4 @@ const deletePin = (pinId) => {
     alert("pin is deleted");
   });
   fetchMap();
-};
-
-//edit pin when click the pen icon
-const editPin = (pinId) => {
-  console.log("edit", pinId);
-  $("#pin-form").toggle();
 };
