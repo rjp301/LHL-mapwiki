@@ -17,9 +17,8 @@ $(document).ready(() => {
     const $editButton = $(this);
     const $mapTitle = $("#list-of-locations > h2");
     const $mapDesc = $("#list-of-locations > p");
-    // console.log($mapTitle.text(), $mapDesc.text())
 
-        //toggle between "edit" and "save changes" when clicking edit button
+    //toggle between "edit" and "save changes" when clicking edit button
     $editButton.toggleClass("edit-active");
     if ($editButton.hasClass("edit-active")) {
       $editButton.text("Save Changes");
@@ -34,8 +33,8 @@ $(document).ready(() => {
       $mapDesc.attr("contenteditable", "false");
       $mapDesc.css("background-color", "inherit");
     }
-  // save button on click
-  //$.ajax( type: post, url: /maps/:mapid, data: mapid, body )
+
+  // send updated data to database after clicking 'save changes'
   if ($editButton.text() === "Edit") {
     const mapData = {
       name: $mapTitle.text(),
@@ -48,12 +47,7 @@ $(document).ready(() => {
       data: mapData,
     })
   }
-  // then toggle back to edit button, editable = false.
-
-
   })
-
-
 });
 
 // show pin position on map when selected from side menu
@@ -124,7 +118,7 @@ const onMapClick = (event) => {
   addNewPin(coordinates);
 };
 
-// Add a new marker to map
+// Add a new pin to map
 const addNewPin = (position) => {
   const newPin = new google.maps.Marker({
     position,
@@ -140,7 +134,11 @@ const addNewPin = (position) => {
     longitude: newPin.getPosition().lng(),
   };
 
-  // New marker is automatically added to database
+  addPinToDatabase(pinData);
+};
+
+// Add new pin to Database
+const addPinToDatabase = (pinData) => {
   $.ajax({
     url: "/pins/new",
     method: "POST",
