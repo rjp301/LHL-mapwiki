@@ -67,13 +67,14 @@ const addNewPin = (position) => {
     .catch((err) => console.log("OOPSIE DOOPSIE", err.message));
 };
 
-//For google map pins//
+//create map pins//
 const mapPins = (pin) => {
   const marker = new google.maps.Marker({
     position: { lat: pin.lat, lng: pin.lng },
     map: map,
   });
 
+  //shows infowindow when click map pin//
   marker.addListener("click", () => {
     const infoWindow = mapInfo(pin);
 
@@ -82,6 +83,13 @@ const mapPins = (pin) => {
       map,
     });
   });
+};
+
+//create map info//
+const mapInfo = (pin) => {
+  return (infowindow = new google.maps.InfoWindow({
+    content: generateInfoContent(pin),
+  }));
 };
 
 //Initial infowindow HTML skeleton//
@@ -100,13 +108,6 @@ const generateInfoContent = (pin) => {
   </div>
   `;
   return content;
-};
-
-//For google map info//
-const mapInfo = (pin) => {
-  return (infowindow = new google.maps.InfoWindow({
-    content: generateInfoContent(pin),
-  }));
 };
 
 //Edit pin when click the pen icon
