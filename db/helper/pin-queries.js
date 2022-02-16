@@ -5,7 +5,7 @@ const db = require("../../lib/db");
  * @return {Promise<{}>} A promise to the pin.
  **/
 
-const getPinsByMap = (map_id) => {
+module.exports.getPinsByMap = (map_id) => {
   const queryString = `SELECT * FROM pins WHERE map_id = $1`;
   const queryValues = [map_id];
   return db
@@ -20,7 +20,7 @@ const getPinsByMap = (map_id) => {
  * @returns {Promise<{}>}
  *
  */
-const deletePin = (id) => {
+module.exports.deletePin = (id) => {
   const queryString = `
   DELETE FROM pins
   WHERE id = $1
@@ -33,7 +33,7 @@ const deletePin = (id) => {
 };
 
 //Edit pin by the id
-const editPin = (id, pin) => {
+module.exports.editPin = (id, pin) => {
   const queryString = `
   UPDATE pins
   SET title = $1, description = $2, image_url = $3
@@ -53,7 +53,7 @@ const editPin = (id, pin) => {
  * @returns {Promise<{}>}
  **/
 
-const addPinToMap = (pin) => {
+module.exports.addPinToMap = (pin) => {
   const { map_id, title, description, image_url, latitude, longitude } = pin;
 
   const queryString = `
@@ -79,11 +79,4 @@ const addPinToMap = (pin) => {
       console.log(err.message);
       return null;
     });
-};
-
-module.exports = {
-  getPinsByMap,
-  deletePin,
-  editPin,
-  addPinToMap,
 };

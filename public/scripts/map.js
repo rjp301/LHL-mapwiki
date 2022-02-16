@@ -69,7 +69,6 @@ const mapPins = (pin) => {
 
   marker.addListener("click", () => {
     const infoWindow = mapInfo(pin);
-    console.log(infoWindow);
 
     infowindow.open({
       anchor: marker,
@@ -78,7 +77,8 @@ const mapPins = (pin) => {
   });
 };
 
-const generateContent = (pin) => {
+//Initial infowindow HTML skeleton//
+const generateInfoContent = (pin) => {
   const content = `
   <div class='info-window'>
      <h3>${pin.title}</h3>
@@ -86,7 +86,9 @@ const generateContent = (pin) => {
      <p>${pin.description}</p>
      <div class='info-buttons'>
        <img onClick="deletePin(${pin.id})" class='pin-trash' src='../docs/icons8-waste-50.png'>
-       <img onClick="editPin(${pin.id})" class='pin-edit' src='../docs/icons8-pencil-50.png'>
+       <div >
+        <img onClick='editPin("${pin.id}, ${pin.title}, ${pin.image_url}, ${pin.description}")' class='pin-edit' src='../docs/icons8-pencil-50.png'>
+       </div>
      </div>
   </div>
   `;
@@ -96,21 +98,37 @@ const generateContent = (pin) => {
 //For google map info//
 const mapInfo = (pin) => {
   return (infowindow = new google.maps.InfoWindow({
-    content: generateContent(pin),
+    content: generateInfoContent(pin),
   }));
 };
 
-//edit pin when click the pen icon
-const editPin = (pinId) => {
+//Edit pin when click the pen icon
+
+const editPin = (pinId, pinTitle, pinImg, pinDesc) => {
+  console.log("coming from edit pin ", pinId, pinTitle, pinImg, pinDesc);
   const editContent = `
   <form >
-     <input type="text" placeoholder="title">
-     <input type="text" placeoholder="description">
-    <button>Edit</button>
+     <label>Title</label>
+     <input type="text" value="${pinTitle}">
+     <label>Description</label>
+     <input type="text" value="${pinDesc}">
+     <label>Image URL</label>
+     <input type="text" value="${pinImg}">
+    <button onClick="editSubmit(${pinId})">Edit</button>
   </form>`;
-  console.log("edit", pinId);
-  $(".info-window").empty();
-  $(".info-window").append(editContent);
+
+  $(".info-window").empty().append(editContent);
+};
+
+const editSubmit = (pinId) => {
+  const pinData = {};
+  $.post(`/pins/${pinId}`, pinId, pinData)
+    .then(() => {
+      console.log(`Success to Edit pin`);
+    })
+    .catch((err) => {
+      console.log(`Edit pin Error :`, err.message);
+    });
 };
 
 //create HTML skeleton//
@@ -133,6 +151,13 @@ const createMapElement = (map) => {
   return $map;
 };
 
+const renderPins = (pins) => {
+  for (const pin of pins) {
+    mapPins(pin);
+    $(".pin-list").prepend(`<li>${pin.title}</li>`);
+  }
+};
+
 const fetchMap = () => {
   $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
 };
@@ -142,14 +167,6 @@ const renderMap = function (map) {
     $.get(`/pins/bymap/${mapId}`).then((pins) => {
       renderPins(pins);
     });
-  };
-
-  const renderPins = (pins) => {
-    for (const pin of pins) {
-      mapPins(pin);
-
-      $(".pin-list").prepend(`<li>${pin.title}</li>`);
-    }
   };
 
   loadMap(map);
