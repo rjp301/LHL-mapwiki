@@ -11,9 +11,9 @@ module.exports.getMaps = () => {
     avg(pins.lat) AS avg_lat,
     avg(pins.lng) AS avg_lng
   FROM maps
-  JOIN pins ON pins.map_id = maps.id
+  LEFT JOIN pins ON pins.map_id = maps.id
   GROUP BY maps.id
-  ORDER BY maps.name;`;
+  ORDER BY maps.date_created DESC;`;
   return db
     .query(queryString)
     .then((res) => res.rows)
@@ -32,10 +32,9 @@ module.exports.getMapById = (id) => {
     avg(pins.lat) AS avg_lat,
     avg(pins.lng) AS avg_lng
   FROM maps
-  JOIN pins ON pins.map_id = maps.id
+  LEFT JOIN pins ON pins.map_id = maps.id
   WHERE maps.id = $1
-  GROUP BY maps.id
-  ORDER BY maps.name;`;
+  GROUP BY maps.id;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
@@ -55,11 +54,11 @@ module.exports.getFavMapsByUserId = (id) => {
     avg(pins.lat) AS avg_lat,
     avg(pins.lng) AS avg_lng
   FROM maps
-  JOIN pins ON pins.map_id = maps.id
+  LEFT JOIN pins ON pins.map_id = maps.id
   JOIN favourites ON favourites.map_id = maps.id
   WHERE favourites.user_id = $1
   GROUP BY maps.id
-  ORDER BY maps.name;`;
+  ORDER BY maps.date_created DESC;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
@@ -79,11 +78,12 @@ module.exports.getEditMapsByUserId = (id) => {
     avg(pins.lat) AS avg_lat,
     avg(pins.lng) AS avg_lng
   FROM maps
-  JOIN pins ON pins.map_id = maps.id
-  JOIN map_editors ON map_editors.map_id = maps.id
+  LEFT JOIN pins ON pins.map_id = maps.id
+  LEFT JOIN map_editors ON map_editors.map_id = maps.id
   WHERE map_editors.user_id = $1
   OR maps.creator_id = $1
-  GROUP BY maps.id;`;
+  GROUP BY maps.id
+  ORDER BY maps.date_created DESC;`;
   const queryValues = [id];
   return db
     .query(queryString, queryValues)

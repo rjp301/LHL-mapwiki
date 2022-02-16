@@ -1,4 +1,4 @@
-/* global document
+/* global document, window
 
 */
 
@@ -19,7 +19,7 @@ const readCookie = (name) => {
 
 
 const bindNavButtons = () => {
-  $('#maps-new');
+  $('#maps-new').click(newMap);
   $('#login-button').click(login);
   $('#maps-view-all').click({ path: '/' }, loadMaps);
   $('#maps-view-fav').click({ path: '/favourites' }, loadMaps);
@@ -27,12 +27,22 @@ const bindNavButtons = () => {
 };
 
 const login = () => {
-  const userId = readCookie('userId');
   $.get('/login');
   $
-    .get(`/users/${userId}`)
+    .get(`/users/${readCookie('userId')}`)
     .then(name => {
-      $('#username').text(name)
+      $('#username').text(name);
+    });
+};
+
+const newMap = () => {
+  $
+    .post('/maps/', {
+      creator_id: readCookie('userId'),
+    })
+    .then(map => {
+      console.log(map);
+      loadMaps({data: { path: '/editable' }});
     });
 };
 
