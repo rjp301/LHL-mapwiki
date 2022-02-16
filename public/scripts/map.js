@@ -1,5 +1,6 @@
 //first initialize the map as a global valuable//
 let map;
+const allPins = [];
 
 //get mapid from route/
 const pathname = window.location.pathname;
@@ -7,12 +8,30 @@ const mapId = pathname.split("/")[2];
 
 $(document).ready(() => {
   fetchMap();
-  // const $addPinButton = $('#floating-menu').children('.add-marker')
-  // $addPinButton.on('click', console.log('YO YO YO'));
+
+  // show pin position on map when selected from side menu
+  $('#floating-menu').on('mouseover', 'li', function () {
+    const listOfPins = $('ul').children();
+    for (let i = 0; i < listOfPins.length; i++) {
+      listOfPins[i].onclick = () => {
+        bounceSelectedPin(i);
+      }
+    }
+  })
 });
 
+// bounce selected pin on map
+const bounceSelectedPin = function(index) {
+    allPins[index].setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(() => {
+      allPins[index].setAnimation(null);
+    }, 350);
+};
+
+// refresh sidebar with newest pin added
 const reloadSidebar = () => {
   $(".pin-list").empty();
+  allPins.length = 0;
   fetchPins(mapId);
 };
 
@@ -33,8 +52,8 @@ const loadMap = (mapData) => {
 
 // Add a new marker when clicking map
 const onMapClick = (event) => {
-  const coordinates = event.latLng;
-  addNewPin(coordinates);
+    const coordinates = event.latLng;
+    addNewPin(coordinates);
 }
 
 // Add a new marker to map
@@ -43,9 +62,6 @@ const addNewPin = (position) => {
     position,
     map,
   });
-
-  //fun little bounce animation: for later use :)
-  // newPin.setAnimation(google.maps.Animation.BOUNCE);
 
   const pinData = {
     map_id: mapId,
@@ -71,8 +87,20 @@ const mapPins = (pin) => {
   const marker = new google.maps.Marker({
     position: { lat: pin.lat, lng: pin.lng },
     map: map,
+    draggable: true
   });
-
+  allPins.push(marker);
+  //optional drag function! :)
+  //in routes/queries, add || to determine which fields get updated and which stay the same value
+  // google.maps.event.addListener(marker, 'dragend', function (evt) {
+  //   const pinNewPosition = evt.latLng;
+  //   $.ajax({
+  //     url: "/pins/:id",
+  //     method: 'POST',
+  //     data: pinNewPosition
+  //   });
+  //   // map.panTo(evt.latLng);
+  // })
   const infowindow = new google.maps.InfoWindow({
     content: `<h3>${pin.title}</h3>
               <img src='${pin.image_url}'>
