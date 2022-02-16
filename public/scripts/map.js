@@ -1,5 +1,7 @@
 //first initialize the map as a global valuable//
 let map;
+let allPins = [];
+let infowindowIsOpen = false;
 
 //get mapid from route/
 const pathname = window.location.pathname;
@@ -7,15 +9,49 @@ const mapId = pathname.split("/")[2];
 
 $(document).ready(() => {
   fetchMap();
-  // const $addPinButton = $('#floating-menu').children('.add-marker')
-  // $addPinButton.on('click', console.log('YO YO YO'));
+  selectPinOnMap();
 });
 
-const reloadSidebar = () => {
-  $(".pin-list").empty();
-  fetchPins(mapId);
+// show pin position on map when selected from side menu
+const selectPinOnMap = () => {
+  $('#floating-menu').on('mouseover', 'li', function () {
+    const $listOfPins = $('ul').children();
+    for (let i = 0; i < $listOfPins.length; i++) {
+      $($listOfPins[i]).on("click", () => {
+        showSelectedPinOnMap(i);
+        // work in progress -- OPTION TO HIGHLIGHT THE SELECTED TEXT WHEN PIN IS ACTIVE
+        // if ($($listOfPins[i]).hasClass("green")) {
+        //   $($listOfPins[i]).removeClass("green");
+        // } else {
+        //   $($listOfPins[i]).addClass("green");
+        // }
+      })
+    }
+  })
+}
+
+const editMapInfo = () => {
+  $("#floating-menu")
+}
+
+// bounce and show selected pin on map
+const showSelectedPinOnMap = function(index) {
+  //show pin data card
+  google.maps.event.trigger(allPins[index], 'click');
+
+  //bounce pin
+  allPins[index].setAnimation(google.maps.Animation.BOUNCE);
+  setTimeout(() => {
+    allPins[index].setAnimation(null);
+  }, 350);
 };
 
+// refresh sidebar with newest pin added
+const reloadSidebar = () => {
+  $(".pin-list").empty();
+  allPins = [];
+  fetchPins(mapId);
+};
 
 //Load fullsize google map//
 const loadMap = (mapData) => {
@@ -28,14 +64,14 @@ const loadMap = (mapData) => {
   });
 
   // Listen for any clicks on the map
-  map.addListener('click', onMapClick);
+  map.addListener("click", onMapClick);
 };
 
 // Add a new marker when clicking map
 const onMapClick = (event) => {
   const coordinates = event.latLng;
   addNewPin(coordinates);
-}
+};
 
 // Add a new marker to map
 const addNewPin = (position) => {
@@ -44,48 +80,101 @@ const addNewPin = (position) => {
     map,
   });
 
-  //fun little bounce animation: for later use :)
-  // newPin.setAnimation(google.maps.Animation.BOUNCE);
-
   const pinData = {
     map_id: mapId,
     title: "Untitled pin",
-    description: 'Enter description',
-    image_url: 'Image URL',
+    description: "Enter description",
+    image_url: "Image URL",
     latitude: newPin.getPosition().lat(),
-    longitude: newPin.getPosition().lng()
+    longitude: newPin.getPosition().lng(),
   };
 
   // New marker is automatically added to database
   $.ajax({
     url: "/pins/new",
-    method: 'POST',
-    data: pinData
-  }).then(() => {
+    method: "POST",
+    data: pinData,
+  })
+    .then(() => {
       reloadSidebar();
-  }).catch((err) => console.log('OOPSIE DOOPSIE', err.message));
+    })
+    .catch((err) => console.log("OOPSIE DOOPSIE", err.message));
 };
 
-//For google map pins//
+//create map pins//
 const mapPins = (pin) => {
   const marker = new google.maps.Marker({
     position: { lat: pin.lat, lng: pin.lng },
     map: map,
+    draggable: true
   });
+  allPins.unshift(marker);
 
-  const infowindow = new google.maps.InfoWindow({
-    content: `<h3>${pin.title}</h3>
-              <img src='${pin.image_url}'>
-              <p>${pin.description}</p>
-             `,
-  });
-
+  //shows infowindow when click map pin//
   marker.addListener("click", () => {
+    const infoWindow = mapInfo(pin);
+
     infowindow.open({
       anchor: marker,
       map,
-    });
+      });
+    //   infowindowIsOpen = true;
+    // }
   });
+};
+
+//create map info//
+const mapInfo = (pin) => {
+  return (infowindow = new google.maps.InfoWindow({
+    content: generateInfoContent(pin),
+  }));
+};
+
+//Initial infowindow HTML skeleton//
+const generateInfoContent = (pin) => {
+  const content = `
+  <div class='info-window'>
+     <h3>${pin.title}</h3>
+     <img src='${pin.image_url}'>
+     <p>${pin.description}</p>
+     <div class='info-buttons'>
+       <img onClick="deletePin(${pin.id})" class='pin-trash' src='../docs/icons8-waste-50.png'>
+       <div >
+        <img onClick='editPin("${pin.id}, ${pin.title}, ${pin.image_url}, ${pin.description}")' class='pin-edit' src='../docs/icons8-pencil-50.png'>
+       </div>
+     </div>
+  </div>
+  `;
+  return content;
+};
+
+//Edit pin when click the pen icon
+
+const editPin = (pinId, pinTitle, pinImg, pinDesc) => {
+  console.log("coming from edit pin ", pinId, pinTitle, pinImg, pinDesc);
+  const editContent = `
+  <form >
+     <label>Title</label>
+     <input type="text" value="${pinTitle}">
+     <label>Description</label>
+     <input type="text" value="${pinDesc}">
+     <label>Image URL</label>
+     <input type="text" value="${pinImg}">
+    <button onClick="editSubmit(${pinId})">Edit</button>
+  </form>`;
+
+  $(".info-window").empty().append(editContent);
+};
+
+const editSubmit = (pinId) => {
+  const pinData = {};
+  $.post(`/pins/${pinId}`, pinId, pinData)
+    .then(() => {
+      console.log(`Success to Edit pin`);
+    })
+    .catch((err) => {
+      console.log(`Edit pin Error :`, err.message);
+    });
 };
 
 //create HTML skeleton//
@@ -100,7 +189,6 @@ const createMapElement = (map) => {
       <ul class='pin-list'>
       </ul>
     </section>
-
     <div id="map-buttons">
       <button class="add-marker">Add</button>
       <button class="share-btn">Share</button>
@@ -109,17 +197,15 @@ const createMapElement = (map) => {
   return $map;
 };
 
-
-
-const fetchMap = () => {
-  $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
-};
-
 const renderPins = (pins) => {
   for (const pin of pins) {
     mapPins(pin);
     $(".pin-list").prepend(`<li>${pin.title}</li>`);
   }
+};
+
+const fetchMap = () => {
+  $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
 };
 
 const fetchPins = (mapId) => {
@@ -137,4 +223,32 @@ const renderMap = function (map) {
   $("#floating-menu").append($map);
 };
 
+//delete pin when click the trash icon//
+const deletePin = (pinId) => {
+  $.get(`/pins/${pinId}/delete`).then(() => {
+    alert("pin is deleted");
+  });
+  fetchMap();
+};
+
 //
+//
+// future/stretch ideas //
+  //could add optional drag function //
+  //in routes/queries, add || to determine which fields get updated and which stay the same value
+  // google.maps.event.addListener(marker, 'dragend', function (evt) {
+  //   const pinNewPosition = evt.latLng;
+  //   $.ajax({
+  //     url: "/pins/:id",
+  //     method: 'POST',
+  //     data: pinNewPosition
+  //   });
+  //   // map.panTo(evt.latLng);
+  // })
+
+  // click pin to toggle infowindow
+      // if (infowindowIsOpen) {
+    //   infowindow.close();
+    //   infowindowIsOpen = false;
+    // } else if (!infowindowIsOpen) {
+
