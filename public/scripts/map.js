@@ -6,7 +6,6 @@ const pathname = window.location.pathname;
 const mapId = pathname.split("/")[2];
 
 $(document).ready(() => {
-  $("#pin-form").on("submit", deletePin);
   fetchMap();
 
   // const $addPinButton = $('#floating-menu').children('.add-marker')

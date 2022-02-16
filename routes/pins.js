@@ -27,14 +27,6 @@ router.get("/:id", (req, res) => {
   });
 });
 
-// Edit: /:id
-router.post("/:id", (req, res) => {
-  const pinId = req.params.id;
-  pinsQueries
-    .editPin(pinId, res.body)
-    .then((response) => res.json(response))
-    .catch((err) => console.error(err.stack));
-});
 // Add: /new
 //   - Full screen map page
 //   - click the a point of the map and add new pin
@@ -51,6 +43,15 @@ router.post("/new", (req, res) => {
     .catch((err) => {
       res.status(500).json({ error: err.message });
     });
+});
+
+// Edit: /:id
+router.post("/:id", (req, res) => {
+  const pinId = req.params.id;
+  pinsQueries
+    .editPin(pinId, res.body)
+    .then((response) => res.json(response))
+    .catch((err) => console.error(err.stack));
 });
 
 // Delete: /:id/delete
