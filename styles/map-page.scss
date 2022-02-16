@@ -41,3 +41,6 @@ html, body {
   justify-content: space-evenly;
   row-gap: 1em;
 }
+
+// #list-of-locations > ul > li { background-color: #336699; }
+#list-of-locations > ul > li:hover, #list-of-locations > ul > li.green { background-color: #7fab7f; }

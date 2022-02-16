@@ -1,6 +1,7 @@
 //first initialize the map as a global valuable//
 let map;
 let allPins = [];
+let infowindowIsOpen = false;
 
 //get mapid from route/
 const pathname = window.location.pathname;
@@ -11,21 +12,30 @@ $(document).ready(() => {
 
   // show pin position on map when selected from side menu
   $('#floating-menu').on('mouseover', 'li', function () {
-    const listOfPins = $('ul').children();
-    for (let i = 0; i < listOfPins.length; i++) {
-      listOfPins[i].onclick = () => {
-        bounceSelectedPin(i);
-      }
+    const $listOfPins = $('ul').children();
+    for (let i = 0; i < $listOfPins.length; i++) {
+      $($listOfPins[i]).on("click", () => {
+        showSelectedPinOnMap(i);
+        // if ($($listOfPins[i]).hasClass("green")) {
+        //   $($listOfPins[i]).removeClass("green");
+        // } else {
+        //   $($listOfPins[i]).addClass("green");
+        // }
+      })
     }
   })
 });
 
-// bounce selected pin on map
-const bounceSelectedPin = function(index) {
-    allPins[index].setAnimation(google.maps.Animation.BOUNCE);
-    setTimeout(() => {
-      allPins[index].setAnimation(null);
-    }, 350);
+// bounce and show selected pin on map
+const showSelectedPinOnMap = function(index) {
+  //show pin data card
+  google.maps.event.trigger(allPins[index], 'click');
+
+  //bounce pin
+  allPins[index].setAnimation(google.maps.Animation.BOUNCE);
+  setTimeout(() => {
+    allPins[index].setAnimation(null);
+  }, 350);
 };
 
 // refresh sidebar with newest pin added
@@ -90,17 +100,7 @@ const mapPins = (pin) => {
     draggable: true
   });
   allPins.unshift(marker);
-  //optional drag function! :)
-  //in routes/queries, add || to determine which fields get updated and which stay the same value
-  // google.maps.event.addListener(marker, 'dragend', function (evt) {
-  //   const pinNewPosition = evt.latLng;
-  //   $.ajax({
-  //     url: "/pins/:id",
-  //     method: 'POST',
-  //     data: pinNewPosition
-  //   });
-  //   // map.panTo(evt.latLng);
-  // })
+
   const infowindow = new google.maps.InfoWindow({
     content: `<h3>${pin.title}</h3>
               <img src='${pin.image_url}'>
@@ -109,10 +109,16 @@ const mapPins = (pin) => {
   });
 
   marker.addListener("click", () => {
-    infowindow.open({
+    // if (infowindowIsOpen) {
+    //   infowindow.close();
+    //   infowindowIsOpen = false;
+    // } else if (!infowindowIsOpen) {
+      infowindow.open({
       anchor: marker,
       map,
-    });
+      });
+    //   infowindowIsOpen = true;
+    // }
   });
 };
 
@@ -166,3 +172,16 @@ const renderMap = function (map) {
 };
 
 //
+//
+// future/stretch ideas //
+  //could add optional drag function //
+  //in routes/queries, add || to determine which fields get updated and which stay the same value
+  // google.maps.event.addListener(marker, 'dragend', function (evt) {
+  //   const pinNewPosition = evt.latLng;
+  //   $.ajax({
+  //     url: "/pins/:id",
+  //     method: 'POST',
+  //     data: pinNewPosition
+  //   });
+  //   // map.panTo(evt.latLng);
+  // })
