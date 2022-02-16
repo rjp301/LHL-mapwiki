@@ -1,6 +1,6 @@
 //first initialize the map as a global valuable//
 let map;
-const allPins = [];
+let allPins = [];
 
 //get mapid from route/
 const pathname = window.location.pathname;
@@ -31,7 +31,7 @@ const bounceSelectedPin = function(index) {
 // refresh sidebar with newest pin added
 const reloadSidebar = () => {
   $(".pin-list").empty();
-  allPins.length = 0;
+  allPins = [];
   fetchPins(mapId);
 };
 
@@ -89,7 +89,7 @@ const mapPins = (pin) => {
     map: map,
     draggable: true
   });
-  allPins.push(marker);
+  allPins.unshift(marker);
   //optional drag function! :)
   //in routes/queries, add || to determine which fields get updated and which stay the same value
   // google.maps.event.addListener(marker, 'dragend', function (evt) {
