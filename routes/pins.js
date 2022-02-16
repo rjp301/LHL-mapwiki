@@ -8,7 +8,7 @@ const pinsQueries = require("../db/helper/pin-queries");
 //GET /pins
 router.get("/bymap/:mapid", (req, res) => {
   //need mapId //
-  const mapId = req.params.mapid
+  const mapId = req.params.mapid;
   pinsQueries
     .getPinsByMap(mapId)
     .then((pins) => {
@@ -20,8 +20,6 @@ router.get("/bymap/:mapid", (req, res) => {
 });
 
 // Read: /:id
-//   - Fullscreen map page
-//   - click the pin and show the details of pin info
 router.get("/:id", (req, res) => {
   const pinId = req.params.id;
   pinsQueries.getPinById(pinId).then((pin) => {
@@ -37,19 +35,27 @@ router.post("/new", (req, res) => {
   console.log(req.body);
   const pinData = req.body;
 
-  pinsQueries.addPinToMap(pinData)
+  pinsQueries
+    .addPinToMap(pinData)
     .then((pins) => {
       res.json(pins);
     })
     .catch((err) => {
       res.status(500).json({ error: err.message });
-    })
+    });
+});
+
+// Edit: /:id
+router.post("/:id", (req, res) => {
+  const pinId = req.params.id;
+  pinsQueries
+    .editPin(pinId, res.body)
+    .then((response) => res.json(response))
+    .catch((err) => console.error(err.stack));
 });
 
 // Delete: /:id/delete
-//   - Button on thumbnail in index page
-//   - calls pinQueries.deletePin
-// */
+
 router.get("/:id/delete", (req, res) => {
   const pinId = req.params.id;
   pinsQueries.deletePin(pinId).then((pin) => {

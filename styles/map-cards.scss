@@ -37,21 +37,37 @@
     top: 0;
     right: 0;
 
+    .card-url {
+      align-items: flex-start;
+      background-color: transparentize($color: $col-base, $amount: 0.2);
+
+    }
 
     & * {
       transition: 0.3s;
       margin: 8px;
 
-      &:hover {
-        transform: scale(1.5);
-        color: red;
-      }
+    }
+
+    .fa-heart {
 
       &.red {
         color: red;
       }
+
+      &:hover {
+        transform: scale(1.5);
+        color: red;
+      }
     }
 
+    .fa-share {
+      color: rgb(41, 41, 145);
+
+      &:hover {
+        transform: scale(1.5);
+      }
+    }
   }
 
   img {
@@ -66,7 +82,7 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    top: 60%;
+    height: fit-content;
     padding: 8px;
     border-radius: 0 0 5px 5px;
 
