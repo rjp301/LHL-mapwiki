@@ -172,24 +172,25 @@ const mapPins = (pin) => {
   marker.addListener("click", () => {
     const infoWindow = mapInfo(pin);
 
-    // infowindow.open({
-    //   anchor: marker,
-    //   map,
-    //   });
+    infowindow.open({
+      anchor: marker,
+      map,
+      });
     //   infowindowIsOpen = true;
     // }
 
+      // work in progress ---
       // click pin to toggle infowindow
-      if (infowindowIsOpen) {
-      infowindow.close();
-      infowindowIsOpen = false;
-    } else if (!infowindowIsOpen) {
-        infowindow.open({
-        anchor: marker,
-        map,
-        });
-        infowindowIsOpen = true;
-    }
+    //   if (infowindowIsOpen) {
+    //   infowindow.close();
+    //   infowindowIsOpen = false;
+    // } else if (!infowindowIsOpen) {
+    //     infowindow.open({
+    //     anchor: marker,
+    //     map,
+    //     });
+    //     infowindowIsOpen = true;
+    // }
   });
 };
 
