@@ -6,17 +6,37 @@ let infowindowIsOpen = false;
 const mapId = window.location.pathname.split("/")[2];
 
 $().ready(() => {
-  $
-    .get(`/maps/api/${mapId}`)
-    .then(mapObject => {
-      initializePage(mapObject);
-      initMap(mapObject);
-      loadPins(mapObject);
-    })
-
-    .catch(err => console.error(err.stack));
+  initializePage();
+  initMap();
+  loadPins();
 });
 
+const getMap = () => {
+  return $.get(`/maps/api/${mapId}`);
+};
+
+
+const initializePage = () => {
+  // Load in map title and description
+  // Need edit functionality implemented
+  getMap().then(mapObject => {
+    $('#map-title').text(mapObject.name);
+    $('#map-description').text(mapObject.description);
+  });
+
+  $('#edit-map')
+    .click(
+
+    );
+
+  // Change username
+  $
+    .get(`/users/${Cookies.get('userId')}`)
+    .then(name => $('#username').text(name));
+
+  // Assign button functions
+  $('#new-pin').click(addPin);
+};
 //// MODIFYING MAP TITLE/DESCRIPTION ////
 // send map data to database
 const sendMapData = (mapData) => {
@@ -66,40 +86,33 @@ const editMapInfo = function () {
     }
 };
 
-////
-
 const initializePage = (mapObject) => {
   // Load in map title and description
   // Need edit functionality implemented
   $('#edit-map').click(editMapInfo);
-
-  $('#map-title').text(mapObject.name);
-  $('#map-description').text(mapObject.description);
-
-  // Change username
-  $
-    .get(`/users/${Cookies.get('userId')}`)
-    .then(name => $('#username').text(name));
-
-  // Assign button functions
-  $('#new-pin').click(addPin);
-};
-
-const initMap = function(mapObject) {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: { lat: mapObject.avg_lat, lng: mapObject.avg_lng },
-    zoom: 14,
-    streetViewControl: false,
-    fullscreenControl: false,
-    mapTypeControl: false,
+  
+const initMap = () => {
+  getMap().then(mapObject => {
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: mapObject.avg_lat, lng: mapObject.avg_lng },
+      zoom: 14,
+      streetViewControl: false,
+      fullscreenControl: false,
+      mapTypeControl: false,
+    });
   });
 };
 
-const loadPins = (mapObject) => {
-  $
-    .get(`/pins/bymap/${mapObject.id}`)
-    .then(pins => renderPins(pins))
-    .catch(err => console.error(err.stack));
+const loadPins = () => {
+  getMap().then(mapObject => {
+    $
+      .get(`/pins/bymap/${mapObject.id}`)
+      .then(pins => renderPins(pins))
+      .catch(err => {
+        console.log(err);
+        console.error(err.stack);
+      });
+  });
 };
 
 const renderPins = pins => {
@@ -118,34 +131,67 @@ const clearMapPins = () => {
   allPins = {};
 };
 
-const createPinElement = (pin,pinObject) => {
+const closeAllWindows = () => {
+  // const keys = Object.keys(allPins);
+  // keys.forEach(i => allPins[i].pinWindow.close());
+  google.maps.event.trigger(map, 'click');
+};
+
+const createPinElement = (pin, pinObject) => {
   const $pin = $(`
   <div class="pin-item">
-    <div class="pin-name">${pin.title}</div>
-    <div class="icon-group">
-      <i class="fa-solid fa-trash-can"></i>
-      <i class="fa-solid fa-pen-to-square"></i>
-    </div>
+  <div class="pin-name">${pin.title}</div>
+  <div class="icon-group">
+  <i class="fa-solid fa-trash-can"></i>
+  <i class="fa-solid fa-pen-to-square"></i>
+  </div>
   </div>
   `);
 
-  const editPin = function(event) {
+  const editPin = (event) => {
     event.preventDefault();
+    event.stopPropagation();
+    closeAllWindows();
+
+    const contentString = `
+    <div class='info-window'>
+      <h3>${pin.title}</h3>
+      <img src='${pin.image_url}'>
+      <p>${pin.description}</p>
+      <div class="btn-group">
+        <button onClick=movePin(${pin.id}) class="pin-move">New Position</button>
+        <button onClick=savePin(${pin.id}) class="pin-save">Save Changes</button>
+      </div>
+    </div>
+    `;
+
+    const editWindow = new google.maps.InfoWindow({ content: contentString });
+
+    editWindow.open({
+      anchor: pinObject.pinMarker,
+      shouldFocus: false,
+      map
+    });
+
+    map.addListener('click', () => {
+      editWindow.close();
+    });
   };
 
-  const deletePin = function(event) {
+  const deletePin = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     $
       .get(`/pins/${pin.id}/delete`)
       .then(loadPins)
       .catch(err => console.error(err.stack));
   };
 
-  $pin.find('.fa-trash-can').click(deletePin);
-  $pin.find('.fa-pen-to-square').click(editPin);
   $pin.click(() => {
     google.maps.event.trigger(pinObject.pinMarker, 'click');
   });
+  $pin.find('.fa-trash-can').click(deletePin);
+  $pin.find('.fa-pen-to-square').click(editPin);
 
   return $pin;
 };
@@ -158,18 +204,19 @@ const createMapPin = (pin) => {
   });
 
   const contentString = `
-    <div class='info-window'>
-      <h3>${pin.title}</h3>
-      <img src='${pin.image_url}'>
-      <p>${pin.description}</p>
-    </div>
-    `;
+  <div class='info-window'>
+  <h3>${pin.title}</h3>
+  <img src='${pin.image_url}'>
+  <p>${pin.description}</p>
+  </div>
+  `;
 
   const infoWindow = new google.maps.InfoWindow({
     content: contentString
   });
 
   mapPin.addListener('click', () => {
+    closeAllWindows();
     mapPin.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(() => {
       mapPin.setAnimation(null);
@@ -194,8 +241,17 @@ const createMapPin = (pin) => {
   return pinObject;
 };
 
-const addPin = function() {
+const movePin = pinId => {
+  const pinObject = allPins[pinId];
+  console.log(pinObject);
+};
 
+const savePin = pinId => {
+
+};
+
+
+const addPin = function() {
   const listener = map.addListener('click', event => {
     const pin = {
       map_id: mapId,
@@ -212,8 +268,8 @@ const addPin = function() {
 };
 
 // const openWindow = pinObject => {
-//   pinObject.pinWindow.open({
-//     anchor: pinObject.pinMarker,
+  //   pinObject.pinWindow.open({
+    //     anchor: pinObject.pinMarker,
 //     map,
 //     shouldFocus: true,
 //   });
