@@ -4,6 +4,7 @@
 $().ready(() => {
   bindNavButtons();
   loadMaps();
+  login();
 });
 
 // const Cookies.get = (name) => {
@@ -32,6 +33,7 @@ const login = () => {
     .get(`/users/${Cookies.get('userId')}`)
     .then(name => {
       $('#username').text(name);
+      $('#login-button').text("Logout");
     });
 };
 
