@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Bootstrap CSS -->
-    <!-- <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-      crossorigin="anonymous"
-    /> -->
-
     <!-- font awesome -->
     <link
       rel="stylesheet"
@@ -19,11 +11,14 @@
     />
 
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;600&display=swap"
+      rel="stylesheet"
+    />
 
-    <title>Cheese Map</title>
+    <title>Wiki Map</title>
 
     <!-- Vendor CSS -->
     <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
@@ -44,11 +39,11 @@
     <nav>
       <div class="nav-top nav">
         <div class="nav-group">
-          <span><i class="fa-solid fa-map"></i></span>
-          <h2 href="#">Cheese Map</h2>
+          <span><img class="nav-logo" src="./docs/map.png" /></span>
+          <h1 href="#">Wiki Map</h1>
         </div>
         <div class="nav-group">
-          <span id="username">not logged in</span>
+          <span id="username">Not logged in</span>
           <button id="login-button" class="btnA">Login</button>
         </div>
       </div>
@@ -60,14 +55,12 @@
           <button id="maps-view-all" class="btnB">All Maps</button>
           <button id="maps-view-edit" class="btnB">My Maps</button>
           <button id="maps-view-fav" class="btnB">My Favourites</button>
-
         </div>
       </div>
     </nav>
     <main>
       <!-- ALL CONTENT GOES HERE -->
-      <section id="map-container">
-      </section>
+      <section id="map-container"></section>
     </main>
   </body>
 </html>
