@@ -19,12 +19,14 @@ $().ready(() => {
 
 const initializePage = (mapObject) => {
   // Load in map title and description
-  $('#edit-title').after(mapObject.name);
-  $('#edit-description').after(mapObject.description);
+  // Need edit functionality implemented
+  $('#edit-title')
+    .after(mapObject.name)
+    .click();
 
-  // Need to be implemented
-  $('#edit-name').click();
-  $('#edit-description').click();
+  $('#edit-description')
+    .after(mapObject.description)
+    .click();
 
   // Change username
   $
@@ -130,7 +132,7 @@ const createMapPin = (pin) => {
         map,
         shouldFocus: true,
       });
-    }, 350);
+    }, 500);
   });
 
   map.addListener('click', () => {
@@ -267,12 +269,12 @@ const addPin = function() {
   //   }, 350);
   // };
 
-//   // refresh sidebar with newest pin added
-//   const reloadSidebar = () => {
-//     $(".pin-list").empty();
-//     allPins = [];
-//     fetchPins(mapId);
-//   };
+  // refresh sidebar with newest pin added
+  // const reloadSidebar = () => {
+  //   $(".pin-list").empty();
+  //   allPins = [];
+  //   fetchPins(mapId);
+  // };
 
 //   //Load fullsize google map//
 //   const initMap = (mapData) => {
