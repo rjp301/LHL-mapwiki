@@ -47,9 +47,10 @@ router.post("/new", (req, res) => {
 
 // Edit: /:id
 router.post("/:id", (req, res) => {
+  console.log(req.body);
   const pinId = req.params.id;
   pinsQueries
-    .editPin(pinId, res.body)
+    .editPin(res.body, pinId)
     .then((response) => res.json(response))
     .catch((err) => console.error(err.stack));
 });

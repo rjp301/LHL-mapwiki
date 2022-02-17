@@ -4,17 +4,17 @@ let map;
 //get mapid from route/
 const pathname = window.location.pathname;
 const mapId = pathname.split("/")[2];
-
 $(document).ready(() => {
-  fetchMap();
   // const $addPinButton = $('#floating-menu').children('.add-marker')
   // $addPinButton.on('click', console.log('YO YO YO'));
+  // const $editSubmit = $(".edit-form").children(".edit-submit");
+  // $editSubmit.on("click", editSubmit);
+  console.log("add click");
+  $(document).on("#edit-form", "submit", submitEdit);
+  fetchAppMap();
+  // initialize();
+  // loadMap(mapData);
 });
-
-const reloadSidebar = () => {
-  $(".pin-list").empty();
-  fetchPins(mapId);
-};
 
 //Load fullsize google map//
 const loadMap = (mapData) => {
@@ -28,6 +28,40 @@ const loadMap = (mapData) => {
 
   // Listen for any clicks on the map
   map.addListener("click", onMapClick);
+};
+// function initialize() {
+//   var mapProp = {
+//     center: new google.maps.LatLng(38, -78),
+//     zoom: 6,
+//     mapTypeId: google.maps.MapTypeId.ROADMAP,
+//   };
+//   map = new google.maps.Map(document.getElementById("map"), mapProp);
+// }
+
+const submitEdit = (e) => {
+  e.preventDefault();
+
+  console.log("hello");
+
+  // const title = $(".edit-title").text();
+  // const description = $(".edit-description").text();
+  // const url = $(".edit-url").text();
+
+  // const pinData = { title, description, url };
+
+  // $.post(`/pins/${pinId}`, pinData)
+  //   .then(() => {
+  //     console.log(`Success to Edit pin`);
+  //     fetchMap();
+  //   })
+  //   .catch((err) => {
+  //     console.log(`Edit pin Error :`, err.message);
+  //   });
+};
+
+const reloadSidebar = () => {
+  $(".pin-list").empty();
+  fetchPins(mapId);
 };
 
 // Add a new marker when clicking map
@@ -85,7 +119,7 @@ const mapPins = (pin) => {
   });
 };
 
-//create map info//
+//creat map info//
 const mapInfo = (pin) => {
   return (infowindow = new google.maps.InfoWindow({
     content: generateInfoContent(pin),
@@ -102,7 +136,8 @@ const generateInfoContent = (pin) => {
      <div class='info-buttons'>
        <img onClick="deletePin(${pin.id})" class='pin-trash' src='../docs/icons8-waste-50.png'>
        <div >
-        <img onClick='editPin("${pin.id}, ${pin.title}, ${pin.image_url}, ${pin.description}")' class='pin-edit' src='../docs/icons8-pencil-50.png'>
+
+        <img onClick='editPin(${pin.id})' class='pin-edit' src='../docs/icons8-pencil-50.png'>
        </div>
      </div>
   </div>
@@ -112,31 +147,27 @@ const generateInfoContent = (pin) => {
 
 //Edit pin when click the pen icon
 
-const editPin = (pinId, pinTitle, pinImg, pinDesc) => {
-  console.log("coming from edit pin ", pinId, pinTitle, pinImg, pinDesc);
+const editPin = (pinId) => {
+  //these are existing data from the database //
+  // console.log("coming from edit pin ", pinId, pinTitle, pinImg, pinDesc);
+
   const editContent = `
-  <form >
+  <form id="edit-form" method="POST" >
      <label>Title</label>
-     <input type="text" value="${pinTitle}">
+     <input name="title" type="text" class="edit-title">
      <label>Description</label>
-     <input type="text" value="${pinDesc}">
+     <input name="description" type="text" class="edit-description">
      <label>Image URL</label>
-     <input type="text" value="${pinImg}">
-    <button onClick="editSubmit(${pinId})">Edit</button>
+     <input name="url" type="text" class="edit-url">
+
+    <button class='edit-submit' type="button">Edit</button>
+
   </form>`;
 
+  //when user add in the new input and sumbit it with Edit button//
+  //send the data to editSubmit function (pinTitle, pinDesc, pinImg, pinId)
+  // <button onClick="console.log("hi")" class="edit-submit" >Edit</button>
   $(".info-window").empty().append(editContent);
-};
-
-const editSubmit = (pinId) => {
-  const pinData = {};
-  $.post(`/pins/${pinId}`, pinId, pinData)
-    .then(() => {
-      console.log(`Success to Edit pin`);
-    })
-    .catch((err) => {
-      console.log(`Edit pin Error :`, err.message);
-    });
 };
 
 //create HTML skeleton//
@@ -166,29 +197,37 @@ const renderPins = (pins) => {
   }
 };
 
-const fetchMap = () => {
-  $.get(`/maps/api/${mapId}`).then((map) => renderMap(map));
+const fetchAppMap = () => {
+  $.get(`/maps/api/${mapId}`)
+    .then((map) => renderMap(map))
+    .catch((error) => {
+      console.log(error.message);
+    });
 };
 
 const fetchPins = (mapId) => {
-  $.get(`/pins/bymap/${mapId}`).then((pins) => {
-    renderPins(pins);
-  });
+  return $.get(`/pins/bymap/${mapId}`)
+    .then((pins) => {
+      renderPins(pins);
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
 };
 
 const renderMap = function (map) {
-  loadMap(map);
-  fetchPins(map.id);
-
-  $("#floating-menu").empty();
-  const $map = createMapElement(map);
-  $("#floating-menu").append($map);
+  // loadfullMap(map);
+  // fetchPins(map.id).then(() => {
+  //   $("#floating-menu").empty();
+  //   const $map = createMapElement(map);
+  //   $("#floating-menu").append($map);
+  // });
 };
 
 //delete pin when click the trash icon//
 const deletePin = (pinId) => {
   $.get(`/pins/${pinId}/delete`).then(() => {
-    alert("pin is deleted");
+    console.log(`delete pin`);
   });
-  fetchMap();
+  fetchAppMap();
 };
