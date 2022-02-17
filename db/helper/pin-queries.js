@@ -54,24 +54,13 @@ module.exports.editPin = (id, pin) => {
  **/
 
 module.exports.addPinToMap = (pin) => {
-  const { map_id, title, description, image_url, latitude, longitude } = pin;
-
+  const keys = Object.keys(pin);
   const queryString = `
-    INSERT INTO pins
-      (map_id, title, description, image_url, lat, lng)
-    VALUES
-      ($1, $2, $3, $4, $5, $6)
+    INSERT INTO pins (${keys.join(', ')})
+    VALUES (${keys.map((_,i) => `$${i + 1}`)})
     RETURNING *
   `;
-  const queryValues = [
-    Number(map_id),
-    title,
-    description,
-    image_url,
-    latitude,
-    longitude,
-  ];
-
+  const queryValues = keys.map(i => pin[i]);
   return db
     .query(queryString, queryValues)
     .then((result) => result.rows[0])

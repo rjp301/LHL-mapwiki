@@ -8,6 +8,7 @@
 
     <!--App JS -->
     <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+    <script type="text/javascript" src="/vendor/js.cookie.js"></script>
     <script type="text/javascript" src="/scripts/map.js"></script>
 
     <!-- font awesome -->
@@ -27,7 +28,7 @@
 
   <body>
     <header id="map-page-header">
-      <h1 id="user-name">User McUser</h1>
+      <h1 id="username">User McUser</h1>
     </header>
     <main>
       <div id="menu">
@@ -35,8 +36,8 @@
           <h2 id="map-title">Map Name</h2>
           <p id="map-description">Description</p>
           <div class="btn-group">
-            <button>Add Pin</button>
-            <button>View Maps</button>
+            <button id="new-pin">Add Pin</button>
+            <a href="/"><button>View Maps</button></a>
           </div>
         </div>
         <section id="location-list"></section>

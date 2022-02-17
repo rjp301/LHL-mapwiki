@@ -1,25 +1,35 @@
-/* global window, document, google */
+/* global window, document, google, Cookies */
 //initialize the map as a global valuable//
 let map;
 let allPins = {};
 let infowindowIsOpen = false;
+const mapId = window.location.pathname.split("/")[2];
 
 $().ready(() => {
 
-  const mapId = window.location.pathname.split("/")[2];
   $
     .get(`/maps/api/${mapId}`)
     .then(mapObject => {
-      $('#map-title').text(mapObject.name);
-      $('#map-description').text(mapObject.description);
-
+      initializePage(mapObject);
       initMap(mapObject);
       loadPins(mapObject);
     })
     .catch(err => console.error(err.stack));
-
-
 });
+
+const initializePage = (mapObject) => {
+  // Load in map title and description
+  $('#map-title').text(mapObject.name);
+  $('#map-description').text(mapObject.description);
+
+  // Change username
+  $
+    .get(`/users/${Cookies.get('userId')}`)
+    .then(name => $('#username').text(name));
+
+  // Assign button functions
+  $('#new-pin').click(addPin);
+};
 
 const initMap = function(mapObject) {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -44,13 +54,13 @@ const renderPins = pins => {
   clearMapPins();
   for (const pin of pins) {
     $pinList.append(createPinElement(pin));
-    allPins[pin.id] = createMapPin(pin);
+    createMapPin(pin);
   }
 };
 
 const clearMapPins = () => {
   const pinKeys = Object.keys(allPins);
-  pinKeys.forEach(i => allPins[i].setMap(null));
+  pinKeys.forEach(i => allPins[i].pinMarker.setMap(null));
   allPins = {};
 };
 
@@ -82,24 +92,58 @@ const createPinElement = (pin) => {
   return $pin;
 };
 
-const createMapPin = (pin, mapObject) => {
+const createMapPin = (pin) => {
   const mapPin = new google.maps.Marker({
     position: { lat: pin.lat, lng: pin.lng },
     map,
   });
 
-  // const pinData = {
-  //   map_id: mapId,
-  //   title: "Untitled pin",
-  //   description: "Enter description",
-  //   image_url: "Image URL",
-  //   latitude: newPin.getPosition().lat(),
-  //   longitude: newPin.getPosition().lng(),
-  // };
-  // infowindowIsOpen = true;
-  // addPinToDatabase(pinData);
+  const contentString = `
+    <div class='info-window'>
+      <h3>${pin.title}</h3>
+      <img src='${pin.image_url}'>
+      <p>${pin.description}</p>
+    </div>
+    `;
 
-  return mapPin;
+  const infoWindow = new google.maps.InfoWindow({
+    content: contentString
+  });
+
+  mapPin.addListener('click', () => {
+    infoWindow.open({
+      anchor: mapPin,
+      map,
+      shouldFocus: true,
+    });
+  });
+
+  map.addListener('click', () => {
+    infoWindow.close();
+  });
+
+  allPins[pin.id] = {
+    rawPin: pin,
+    pinMarker: mapPin,
+    pinWindow: infoWindow
+  };
+};
+
+const addPin = function() {
+
+  const listener = map.addListener('click', event => {
+    const pin = {
+      map_id: mapId,
+      lat: event.latLng.lat,
+      lng: event.latLng.lng
+    };
+    console.log(pin);
+    google.maps.event.removeListener(listener); //
+    $
+      .post('/pins/new', pin)
+      .then(loadPins)
+      .catch(err => console.error(err.stack));
+  });
 };
 
 
