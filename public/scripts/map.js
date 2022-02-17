@@ -1,4 +1,4 @@
-//first initialize the map as a global valuable//
+//initialize the map as a global valuable//
 let map;
 let allPins = [];
 let infowindowIsOpen = false;
@@ -6,11 +6,64 @@ let infowindowIsOpen = false;
 //get mapid from route/
 const pathname = window.location.pathname;
 const mapId = pathname.split("/")[2];
+
 $(document).ready(() => {
   // $(".edit-submit").on("click", submitEdit);
   fetchMap();
   selectPinOnMap();
+  loadEditMapListener();
 });
+
+//// For updating map title, description ////
+// set click listener for updating map title and description
+const loadEditMapListener = () => {
+  $("#floating-menu").on("click", ".inner-editmap-btn", function () {
+    const $editButton = $(this);
+    const $mapTitle = $("#list-of-locations > h2");
+    const $mapDesc = $("#list-of-locations > p");
+    const mapInfo = { title: $mapTitle, description: $mapDesc };
+
+    //toggle between "edit" and "save changes" when clicking edit button
+    $editButton.toggleClass("edit-active");
+
+    if ($editButton.hasClass("edit-active")) {
+      $editButton.text("Save Changes");
+      toggleTextFields(true, mapInfo);
+    } else {
+      $editButton.text("Edit");
+      toggleTextFields(false, mapInfo);
+
+      //collect and submit updated texts
+      const mapData = {
+        name: $mapTitle.text(),
+        description: $mapDesc.text(),
+      };
+      sendMapData(mapData);
+    }
+  });
+};
+
+// send map data to database
+const sendMapData = (mapData) => {
+  $.ajax({
+    url: `/maps/${mapId}`,
+    method: "POST",
+    data: mapData,
+  });
+};
+
+// set selected text fields to editable or default
+const toggleTextFields = (editable, texts) => {
+  for (const item in texts) {
+    if (editable) {
+      texts[item].attr("contenteditable", "true");
+      texts[item].css("background-color", "gainsboro");
+    } else {
+      texts[item].attr("contenteditable", "false");
+      texts[item].css("background-color", "inherit");
+    }
+  }
+};
 
 // show pin position on map when selected from side menu
 const selectPinOnMap = () => {
@@ -28,10 +81,6 @@ const selectPinOnMap = () => {
       });
     }
   });
-};
-
-const editMapInfo = () => {
-  $("#floating-menu");
 };
 
 // bounce and show selected pin on map
@@ -54,7 +103,7 @@ const reloadSidebar = () => {
 };
 
 //Load fullsize google map//
-const loadMap = (mapData) => {
+const initMap = (mapData) => {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 12,
     center: { lat: mapData.avg_lat, lng: mapData.avg_lng },
@@ -73,7 +122,7 @@ const onMapClick = (event) => {
   addNewPin(coordinates);
 };
 
-// Add a new marker to map
+// Add a new pin to map
 const addNewPin = (position) => {
   const newPin = new google.maps.Marker({
     position,
@@ -88,8 +137,12 @@ const addNewPin = (position) => {
     latitude: newPin.getPosition().lat(),
     longitude: newPin.getPosition().lng(),
   };
+  infowindowIsOpen = true;
+  addPinToDatabase(pinData);
+};
 
-  // New marker is automatically added to database
+// Add new pin to Database
+const addPinToDatabase = (pinData) => {
   $.ajax({
     url: "/pins/new",
     method: "POST",
@@ -120,6 +173,19 @@ const mapPins = (pin) => {
     });
     //   infowindowIsOpen = true;
     // }
+
+    // work in progress ---
+    // click pin to toggle infowindow
+    //   if (infowindowIsOpen) {
+    //   infowindow.close();
+    //   infowindowIsOpen = false;
+    // } else if (!infowindowIsOpen) {
+    //     infowindow.open({
+    //     anchor: marker,
+    //     map,
+    //     });
+    //     infowindowIsOpen = true;
+    // }
   });
 };
 
@@ -128,69 +194,6 @@ const mapInfo = (pin) => {
   return (infowindow = new google.maps.InfoWindow({
     content: generateInfoContent(pin),
   }));
-};
-
-//Initial infowindow HTML skeleton//
-const generateInfoContent = (pin) => {
-  const content = `
-  <div class='info-window'>
-     <h3>${pin.title}</h3>
-     <img src='${pin.image_url}'>
-     <p>${pin.description}</p>
-     <div class='info-buttons'>
-       <img onClick="deletePin(${pin.id})" class='pin-trash' src='../docs/icons8-waste-50.png'>
-       <div >
-
-        <img onClick='editPin(${pin.id})' class='pin-edit' src='../docs/icons8-pencil-50.png'>
-       </div>
-     </div>
-  </div>
-  `;
-  return content;
-};
-
-//Edit pin when click the pen icon
-
-const editPin = (pinId) => {
-  //these are existing data from the database //
-  console.log("coming from edit pin ", pinId);
-
-  const editContent = `
-  <form id="edit-form" method="POST" >
-     <label>Title</label>
-     <input name="title" type="text" class="edit-title">
-     <label>Description</label>
-     <input name="description" type="text" class="edit-description">
-     <label>Image URL</label>
-     <input name="url" type="text" class="edit-url">
-
-    <p onClick="submitEdit(${pinId})" class='edit-submit'>Edit</p>
-
-  </form>`;
-
-  //when user add in the new input and sumbit it with Edit button//
-  //send the data to editSubmit function (pinTitle, pinDesc, pinImg, pinId)
-  // <button onClick="console.log("hi")" class="edit-submit" >Edit</button>
-  $(".info-window").empty().append(editContent);
-};
-
-const submitEdit = (pinId) => {
-  console.log("hello");
-
-  const title = $(".edit-title").val();
-  const description = $(".edit-description").val();
-  const url = $(".edit-url").val();
-
-  const pinData = { title, description, url };
-
-  $.post(`/pins/${pinId}`, pinData)
-    .then(() => {
-      console.log(`Success to Edit pin`);
-      $(".info-window").empty().append(generateInfoContent(pinId));
-    })
-    .catch((err) => {
-      console.log(`Edit pin Error :`, err.message);
-    });
 };
 
 //create HTML skeleton//
@@ -206,8 +209,9 @@ const createMapElement = (map) => {
       </ul>
     </section>
     <div id="map-buttons">
-      <button class="add-marker">Add</button>
-      <button class="share-btn">Share</button>
+      <button class="inner-editmap-btn">Edit</button>
+      <button class="inner-fav-btn">Fav</button>
+      <button class="inner-share-btn">Share</button>
     </div>
  `;
   return $map;
@@ -239,22 +243,75 @@ const fetchPins = (mapId) => {
 };
 
 const renderMap = function (map) {
-  loadMap(map);
-  fetchPins(map.id).then(() => {
-    $("#floating-menu").empty();
-    const $map = createMapElement(map);
-    $("#floating-menu").append($map);
-  });
+  initMap(map);
+  fetchPins(map.id);
+
+  $("#floating-menu").empty();
+  const $map = createMapElement(map);
+  $("#floating-menu").append($map);
 };
+// }
 
 //delete pin when click the trash icon//
 const deletePin = (pinId) => {
-  $.get(`/pins/${pinId}/delete`).then(() => {
-    console.log(`delete pin`);
-  });
+  $.get(`/pins/${pinId}/delete`)
+    .then(() => {
+      console.log(`delete pin`);
+    })
+    .catch((err) => {
+      console.log(`Delete pin Error :`, err.message);
+    });
   fetchMap();
 };
 
+//Edit pin when click the pen icon
+const submitEditPin = (pinId) => {
+  const title = $(".edit-title").val();
+  const description = $(".edit-description").val();
+  const url = $(".edit-url").val();
+  const pinData = { title, description, url };
+
+  $.post(`/pins/${pinId}`, pinData)
+    .then(() => {
+      console.log(`Success to Edit pin`, generateInfoContent(pinId));
+      return $(".info-window").empty().append(generateInfoContent(pinId));
+    })
+    .catch((err) => {
+      console.log(`Edit pin Error :`, err.message);
+    });
+};
+
+const editPin = (pinId) => {
+  const editContent = `
+<form id="edit-form" method="POST" >
+   <label>Title</label>
+   <input name="title" type="text" class="edit-title">
+   <label>Description</label>
+   <input name="description" type="text" class="edit-description">
+   <label>Image URL</label>
+   <input name="url" type="text" class="edit-url">
+
+  <p onClick="submitEditPin(${pinId})" class='edit-submit'>Edit</p>
+
+</form>`;
+  $(".info-window").empty().append(editContent);
+};
+
+//Initial infowindow HTML skeleton//
+const generateInfoContent = (pin) => {
+  const content = `
+<div class='info-window'>
+   <h3>${pin.title}</h3>
+   <img src='${pin.image_url}'>
+   <p>${pin.description}</p>
+   <div class='info-buttons'>
+     <img onClick="deletePin(${pin.id})" class='pin-trash' src='../docs/icons8-waste-50.png'>
+      <img onClick='editPin(${pin.id})' class='pin-edit' src='../docs/icons8-pencil-50.png'>
+   </div>
+</div>
+`;
+  return content;
+};
 //
 //
 // future/stretch ideas //
