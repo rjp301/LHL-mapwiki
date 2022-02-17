@@ -1,20 +1,56 @@
 //first initialize the map as a global valuable//
 let map;
+let allPins = [];
+let infowindowIsOpen = false;
 
 //get mapid from route/
 const pathname = window.location.pathname;
 const mapId = pathname.split("/")[2];
 $(document).ready(() => {
-  // const $addPinButton = $('#floating-menu').children('.add-marker')
-  // $addPinButton.on('click', console.log('YO YO YO'));
-  // const $editSubmit = $(".edit-form").children(".edit-submit");
-  // $editSubmit.on("click", editSubmit);
-  console.log("add click");
-  $(document).on("#edit-form", "submit", submitEdit);
-  fetchAppMap();
-  // initialize();
-  // loadMap(mapData);
+  fetchMap();
+  selectPinOnMap();
 });
+
+// show pin position on map when selected from side menu
+const selectPinOnMap = () => {
+  $("#floating-menu").on("mouseover", "li", function () {
+    const $listOfPins = $("ul").children();
+    for (let i = 0; i < $listOfPins.length; i++) {
+      $($listOfPins[i]).on("click", () => {
+        showSelectedPinOnMap(i);
+        // work in progress -- OPTION TO HIGHLIGHT THE SELECTED TEXT WHEN PIN IS ACTIVE
+        // if ($($listOfPins[i]).hasClass("green")) {
+        //   $($listOfPins[i]).removeClass("green");
+        // } else {
+        //   $($listOfPins[i]).addClass("green");
+        // }
+      });
+    }
+  });
+};
+
+const editMapInfo = () => {
+  $("#floating-menu");
+};
+
+// bounce and show selected pin on map
+const showSelectedPinOnMap = function (index) {
+  //show pin data card
+  google.maps.event.trigger(allPins[index], "click");
+
+  //bounce pin
+  allPins[index].setAnimation(google.maps.Animation.BOUNCE);
+  setTimeout(() => {
+    allPins[index].setAnimation(null);
+  }, 350);
+};
+
+// refresh sidebar with newest pin added
+const reloadSidebar = () => {
+  $(".pin-list").empty();
+  allPins = [];
+  fetchPins(mapId);
+};
 
 //Load fullsize google map//
 const loadMap = (mapData) => {
@@ -29,40 +65,27 @@ const loadMap = (mapData) => {
   // Listen for any clicks on the map
   map.addListener("click", onMapClick);
 };
-// function initialize() {
-//   var mapProp = {
-//     center: new google.maps.LatLng(38, -78),
-//     zoom: 6,
-//     mapTypeId: google.maps.MapTypeId.ROADMAP,
-//   };
-//   map = new google.maps.Map(document.getElementById("map"), mapProp);
-// }
 
-const submitEdit = (e) => {
-  e.preventDefault();
+// const submitEdit = (e) => {
+//   e.preventDefault();
 
-  console.log("hello");
+//   console.log("hello");
 
-  // const title = $(".edit-title").text();
-  // const description = $(".edit-description").text();
-  // const url = $(".edit-url").text();
+// const title = $(".edit-title").text();
+// const description = $(".edit-description").text();
+// const url = $(".edit-url").text();
 
-  // const pinData = { title, description, url };
+// const pinData = { title, description, url };
 
-  // $.post(`/pins/${pinId}`, pinData)
-  //   .then(() => {
-  //     console.log(`Success to Edit pin`);
-  //     fetchMap();
-  //   })
-  //   .catch((err) => {
-  //     console.log(`Edit pin Error :`, err.message);
-  //   });
-};
-
-const reloadSidebar = () => {
-  $(".pin-list").empty();
-  fetchPins(mapId);
-};
+// $.post(`/pins/${pinId}`, pinData)
+//   .then(() => {
+//     console.log(`Success to Edit pin`);
+//     fetchMap();
+//   })
+//   .catch((err) => {
+//     console.log(`Edit pin Error :`, err.message);
+//   });
+// };
 
 // Add a new marker when clicking map
 const onMapClick = (event) => {
@@ -76,9 +99,6 @@ const addNewPin = (position) => {
     position,
     map,
   });
-
-  //fun little bounce animation: for later use :)
-  // newPin.setAnimation(google.maps.Animation.BOUNCE);
 
   const pinData = {
     map_id: mapId,
@@ -106,7 +126,9 @@ const mapPins = (pin) => {
   const marker = new google.maps.Marker({
     position: { lat: pin.lat, lng: pin.lng },
     map: map,
+    draggable: true,
   });
+  allPins.unshift(marker);
 
   //shows infowindow when click map pin//
   marker.addListener("click", () => {
@@ -116,6 +138,8 @@ const mapPins = (pin) => {
       anchor: marker,
       map,
     });
+    //   infowindowIsOpen = true;
+    // }
   });
 };
 
@@ -197,7 +221,7 @@ const renderPins = (pins) => {
   }
 };
 
-const fetchAppMap = () => {
+const fetchMap = () => {
   $.get(`/maps/api/${mapId}`)
     .then((map) => renderMap(map))
     .catch((error) => {
@@ -216,12 +240,12 @@ const fetchPins = (mapId) => {
 };
 
 const renderMap = function (map) {
-  // loadfullMap(map);
-  // fetchPins(map.id).then(() => {
-  //   $("#floating-menu").empty();
-  //   const $map = createMapElement(map);
-  //   $("#floating-menu").append($map);
-  // });
+  loadMap(map);
+  fetchPins(map.id).then(() => {
+    $("#floating-menu").empty();
+    const $map = createMapElement(map);
+    $("#floating-menu").append($map);
+  });
 };
 
 //delete pin when click the trash icon//
@@ -229,5 +253,26 @@ const deletePin = (pinId) => {
   $.get(`/pins/${pinId}/delete`).then(() => {
     console.log(`delete pin`);
   });
-  fetchAppMap();
+  fetchMap();
 };
+
+//
+//
+// future/stretch ideas //
+//could add optional drag function //
+//in routes/queries, add || to determine which fields get updated and which stay the same value
+// google.maps.event.addListener(marker, 'dragend', function (evt) {
+//   const pinNewPosition = evt.latLng;
+//   $.ajax({
+//     url: "/pins/:id",
+//     method: 'POST',
+//     data: pinNewPosition
+//   });
+//   // map.panTo(evt.latLng);
+// })
+
+// click pin to toggle infowindow
+// if (infowindowIsOpen) {
+//   infowindow.close();
+//   infowindowIsOpen = false;
+// } else if (!infowindowIsOpen) {

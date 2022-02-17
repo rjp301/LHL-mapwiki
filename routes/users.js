@@ -21,4 +21,11 @@ router.get("/", (req, res) => {
     });
 });
 
+router.get('/:id', (req, res) => {
+  userQueries
+    .getUserName(req.params.id)
+    .then(name => res.json(name))
+    .catch((err) => console.error(err.stack));
+});
+
 module.exports = router;

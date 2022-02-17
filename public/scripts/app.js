@@ -1,37 +1,66 @@
+/* global Cookies */
+
+
 $().ready(() => {
   bindNavButtons();
-
-  const $container = $('main');
-  $container.append($(`<div id="map-container"></div>`));
+  loadMaps();
 });
 
-const readCookie = (name) => {
-  const nameEQ = name + "=";
-  const ca = document.cookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-  }
-  return null;
-};
+// const Cookies.get = (name) => {
+//   const nameEQ = name + "=";
+//   const ca = document.cookie.split(';');
+//   for (let i = 0; i < ca.length; i++) {
+//     let c = ca[i];
+//     while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+//     if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+//   }
+//   return null;
+// };
 
 
 const bindNavButtons = () => {
-  $('#maps-new');
-  $('#login-button').click(() => $.get('/login'));
-  $('#maps-view-all').click({ path: '/' }, loadMaps);
-  $('#maps-view-fav').click({ path: '/favourites' }, loadMaps);
-  $('#maps-view-edit').click({ path: '/editable' },loadMaps);
+  $('#maps-new').click(newMap);
+  $('#login-button').click(login);
+  $('#maps-view-all').click({ state: 0}, changeView);
+  $('#maps-view-fav').click({ state: 1}, changeView);
+  $('#maps-view-edit').click({ state: 2}, changeView);
 };
 
-const loadMaps = (data) => {
-  const path = data.data.path;
+const login = () => {
+  $.get('/login');
+  $
+    .get(`/users/${Cookies.get('userId')}`)
+    .then(name => {
+      $('#username').text(name);
+    });
+};
+
+const newMap = () => {
+  $
+    .post('/maps/', {
+      creator_id: Cookies.get('userId'),
+    })
+    .then(map => {
+      console.log(map);
+      loadMaps();
+    });
+};
+
+const changeView = state => {
+  Cookies.set('viewState', state.data.state);
+  loadMaps();
+};
+
+const loadMaps = () => {
+  const viewState = Cookies.get('viewState');
+  const paths = ['/', '/favourites', '/editable'];
+  const path = paths[viewState];
+
   console.log(`Fetching maps from /maps${path}...`);
 
   // need to fetch filtered maps but also favourited maps
   // to compare and colour heart so need two promises
-  const p1 = $.get("/maps" + path);
+  const p1 = $.get('/maps' + path);
   const p2 = $.get('/maps/favourites');
 
   // When both promises resolve pass both values into rendermaps
@@ -41,24 +70,26 @@ const loadMaps = (data) => {
       console.log(values);
       renderMaps(...values);
     })
-    .catch(err => console.error(err.stack));
+    .catch(err => {
+      console.log('LoadMaps error');
+      console.log(err);
+      console.error(err.stack);
+    });
 };
 
 const renderMaps = (maps, favourites) => {
   const $mapContainer = $('#map-container');
-  // const favourites = $.get('/maps/favourites');
-  // console.log(favourites);
   $mapContainer.empty();
+
   for (const map of maps) {
-    const $map = createMapElement(map, favourites);
+    const isFav = favourites.map(i => i.id).includes(map.id);
+    const $map = createMapElement(map, isFav);
     $mapContainer.append($map);
   }
 };
 
-const createMapElement = (map, favourites) => {
-  const apiKey = readCookie('mapsAPIKey');
-
-  // const pins = $.get(`/pins/${map.id}`);
+const createMapElement = (map, isFav) => {
+  const apiKey = Cookies.get('mapsAPIKey');
 
   const thumbnail = 'https://maps.googleapis.com/maps/api/staticmap?' + $.param({
     center: `${map.avg_lat},${map.avg_lng}`,
@@ -73,6 +104,7 @@ const createMapElement = (map, favourites) => {
     <div class="card-icons">
       <i class="fa-solid fa-heart"></i>
       <i class="fa-solid fa-share"></i>
+      <i class="fa-solid fa-trash-can"></i>
     </div>
     <img src="${thumbnail}" alt="">
     <div class="card-text">
@@ -83,26 +115,26 @@ const createMapElement = (map, favourites) => {
   </a>
   `);
 
-  const $shareURL = $mapCard.find('.card-url').hide();
-
   const toggleFavourite = function(event) {
-    // click event handler tied to heart icon
     event.preventDefault();
-    console.log($(this));
+    const mapUser = {
+      userId: Cookies.get('userId'),
+      mapId: map.id
+    };
+
     if ($(this).hasClass('red')) {
       console.log(`Removing ${map.name} from favourites...`);
       $(this).removeClass('red');
-      $.post('/favourites/delete', {
-        userId: readCookie('userId'),
-        mapId: map.id
-      });
+      $.
+        post('/favourites/delete', mapUser)
+        .then(loadMaps);
+
     } else {
       console.log(`Adding ${map.name} to favourites...`);
       $(this).addClass('red');
-      $.post('/favourites', {
-        userId: readCookie('userId'),
-        mapId: map.id
-      });
+      $
+        .post('/favourites', mapUser)
+        .then(loadMaps);
     }
   };
 
@@ -111,17 +143,21 @@ const createMapElement = (map, favourites) => {
     $mapCard.find('.card-url').slideToggle();
   };
 
-  const inFavourites = (favourites, map) => {
-    const favIds = favourites.map(i => i.id); // Strip favourites down to just id
-    return favIds.includes(map.id); // if current map in favourites it is favourited
+  const delMap = function(event) {
+    event.preventDefault();
+    $
+      .get(`/maps/${map.id}/delete`)
+      .then(loadMaps);
   };
 
-  const $favButton = $mapCard.find('.fa-heart');
-  $favButton.click(toggleFavourite);
+  // Bind actions to buttons
+  $mapCard.find('.card-url').hide();
+  $mapCard.find('.fa-heart').click(toggleFavourite);
   $mapCard.find('.fa-share').click(toggleShare);
+  $mapCard.find('.fa-trash-can').click(delMap);
 
-  if (favourites && inFavourites(favourites, map)) {
-    $favButton.addClass('red');
+  if (isFav) {
+    $mapCard.find('.fa-heart').addClass('red');
   }
 
   return $mapCard;
