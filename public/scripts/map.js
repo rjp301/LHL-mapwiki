@@ -78,7 +78,13 @@ const clearMapPins = () => {
   allPins = {};
 };
 
-const createPinElement = (pin,pinObject) => {
+const closeAllWindows = () => {
+  // const keys = Object.keys(allPins);
+  // keys.forEach(i => allPins[i].pinWindow.close());
+  google.maps.event.trigger(map, 'click');
+};
+
+const createPinElement = (pin, pinObject) => {
   const $pin = $(`
   <div class="pin-item">
   <div class="pin-name">${pin.title}</div>
@@ -89,8 +95,34 @@ const createPinElement = (pin,pinObject) => {
   </div>
   `);
 
-  const editPin = function(event) {
+  const editPin = (event) => {
     event.preventDefault();
+    event.stopPropagation();
+    closeAllWindows();
+
+    const contentString = `
+    <div class='info-window'>
+      <h3>${pin.title}</h3>
+      <img src='${pin.image_url}'>
+      <p>${pin.description}</p>
+      <div class="btn-group">
+        <button onClick=movePin(${pin.id}) class="pin-move">New Position</button>
+        <button onClick=savePin(${pin.id}) class="pin-save">Save Changes</button>
+      </div>
+    </div>
+    `;
+
+    const editWindow = new google.maps.InfoWindow({ content: contentString });
+
+    editWindow.open({
+      anchor: pinObject.pinMarker,
+      shouldFocus: false,
+      map
+    });
+
+    map.addListener('click', () => {
+      editWindow.close();
+    });
   };
 
   const deletePin = (event) => {
@@ -131,6 +163,7 @@ const createMapPin = (pin) => {
   });
 
   mapPin.addListener('click', () => {
+    closeAllWindows();
     mapPin.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(() => {
       mapPin.setAnimation(null);
@@ -155,8 +188,17 @@ const createMapPin = (pin) => {
   return pinObject;
 };
 
-const addPin = function() {
+const movePin = pinId => {
+  const pinObject = allPins[pinId];
+  console.log(pinObject);
+};
 
+const savePin = pinId => {
+
+};
+
+
+const addPin = function() {
   const listener = map.addListener('click', event => {
     const pin = {
       map_id: mapId,
