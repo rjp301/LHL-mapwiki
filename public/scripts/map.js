@@ -6,7 +6,6 @@ let infowindowIsOpen = false;
 const mapId = window.location.pathname.split("/")[2];
 
 $().ready(() => {
-
   $
     .get(`/maps/api/${mapId}`)
     .then(mapObject => {
@@ -14,13 +13,18 @@ $().ready(() => {
       initMap(mapObject);
       loadPins(mapObject);
     })
+
     .catch(err => console.error(err.stack));
 });
 
 const initializePage = (mapObject) => {
   // Load in map title and description
-  $('#map-title').text(mapObject.name);
-  $('#map-description').text(mapObject.description);
+  $('#edit-title').after(mapObject.name);
+  $('#edit-description').after(mapObject.description);
+
+  // Need to be implemented
+  $('#edit-name').click();
+  $('#edit-description').click();
 
   // Change username
   $
@@ -53,8 +57,8 @@ const renderPins = pins => {
   $pinList.empty();
   clearMapPins();
   for (const pin of pins) {
-    $pinList.append(createPinElement(pin));
-    createMapPin(pin);
+    const pinObject = createMapPin(pin); // add pin to map and pinlist
+    $pinList.append(createPinElement(pin,pinObject)); // add pin to sidebar
   }
 };
 
@@ -64,7 +68,7 @@ const clearMapPins = () => {
   allPins = {};
 };
 
-const createPinElement = (pin) => {
+const createPinElement = (pin,pinObject) => {
   const $pin = $(`
   <div class="pin-item">
     <div class="pin-name">${pin.title}</div>
@@ -75,11 +79,13 @@ const createPinElement = (pin) => {
   </div>
   `);
 
-  const editPin = function() {
+  const editPin = function(event) {
+    event.preventDefault();
 
   };
 
-  const deletePin = function() {
+  const deletePin = function(event) {
+    event.preventDefault();
     $
       .get(`/pins/${pin.id}/delete`)
       .then(loadPins)
@@ -88,11 +94,16 @@ const createPinElement = (pin) => {
 
   $pin.find('.fa-trash-can').click(deletePin);
   $pin.find('.fa-pen-to-square').click(editPin);
+  $pin.click(() => {
+    google.maps.event.trigger(pinObject.pinMarker, 'click');
+  });
 
   return $pin;
 };
 
+
 const createMapPin = (pin) => {
+  //Add pin to map along with all accompanying infrastructure
   const mapPin = new google.maps.Marker({
     position: { lat: pin.lat, lng: pin.lng },
     map,
@@ -111,22 +122,28 @@ const createMapPin = (pin) => {
   });
 
   mapPin.addListener('click', () => {
-    infoWindow.open({
-      anchor: mapPin,
-      map,
-      shouldFocus: true,
-    });
+    mapPin.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(() => {
+      mapPin.setAnimation(null);
+      infoWindow.open({
+        anchor: mapPin,
+        map,
+        shouldFocus: true,
+      });
+    }, 350);
   });
 
   map.addListener('click', () => {
     infoWindow.close();
   });
 
-  allPins[pin.id] = {
+  const pinObject = {
     rawPin: pin,
     pinMarker: mapPin,
     pinWindow: infoWindow
   };
+  allPins[pin.id] = pinObject;
+  return pinObject;
 };
 
 const addPin = function() {
@@ -138,7 +155,7 @@ const addPin = function() {
       lng: event.latLng.lng
     };
     console.log(pin);
-    google.maps.event.removeListener(listener); //
+    google.maps.event.removeListener(listener); // remove listener after single use
     $
       .post('/pins/new', pin)
       .then(loadPins)
@@ -146,10 +163,18 @@ const addPin = function() {
   });
 };
 
+// const openWindow = pinObject => {
+//   pinObject.pinWindow.open({
+//     anchor: pinObject.pinMarker,
+//     map,
+//     shouldFocus: true,
+//   });
+// };
 
-// //get mapid from route/
-// const pathname = window.location.pathname;
-// const mapId = pathname.split("/")[2];
+// const closeWindow = pinObject => {
+//   pinObject.pinWindow.close();
+// };
+
 
 //   $().ready(() => {
 //     fetchMap();
@@ -212,35 +237,35 @@ const addPin = function() {
 
 
 
-//   // show pin position on map when selected from side menu
-//   const selectPinOnMap = () => {
-//     $('#floating-menu').on('mouseover', 'li', function () {
-//       const $listOfPins = $('ul').children();
-//       for (let i = 0; i < $listOfPins.length; i++) {
-//         $($listOfPins[i]).on("click", () => {
-//           showSelectedPinOnMap(i);
-//           // work in progress -- OPTION TO HIGHLIGHT THE SELECTED TEXT WHEN PIN IS ACTIVE
-//           // if ($($listOfPins[i]).hasClass("green")) {
-//           //   $($listOfPins[i]).removeClass("green");
-//           // } else {
-//           //   $($listOfPins[i]).addClass("green");
-//           // }
-//         })
-//       }
-//     })
-//   }
+  // show pin position on map when selected from side menu
+  // const selectPinOnMap = () => {
+  //   $('#floating-menu').on('mouseover', 'li', function () {
+  //     const $listOfPins = $('ul').children();
+  //     for (let i = 0; i < $listOfPins.length; i++) {
+  //       $($listOfPins[i]).on("click", () => {
+  //         showSelectedPinOnMap(i);
+  //         // work in progress -- OPTION TO HIGHLIGHT THE SELECTED TEXT WHEN PIN IS ACTIVE
+  //         // if ($($listOfPins[i]).hasClass("green")) {
+  //         //   $($listOfPins[i]).removeClass("green");
+  //         // } else {
+  //         //   $($listOfPins[i]).addClass("green");
+  //         // }
+  //       })
+  //     }
+  //   })
+  // }
 
-//   // bounce and show selected pin on map
-//   const showSelectedPinOnMap = function(index) {
-//     //show pin data card
-//     google.maps.event.trigger(allPins[index], 'click');
+  // // bounce and show selected pin on map
+  // const showSelectedPinOnMap = function(index) {
+  //   //show pin data card
+  //   google.maps.event.trigger(allPins[index], 'click');
 
-//     //bounce pin
-//     allPins[index].setAnimation(google.maps.Animation.BOUNCE);
-//     setTimeout(() => {
-//       allPins[index].setAnimation(null);
-//     }, 350);
-//   };
+  //   //bounce pin
+  //   allPins[index].setAnimation(google.maps.Animation.BOUNCE);
+  //   setTimeout(() => {
+  //     allPins[index].setAnimation(null);
+  //   }, 350);
+  // };
 
 //   // refresh sidebar with newest pin added
 //   const reloadSidebar = () => {
