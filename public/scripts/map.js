@@ -95,6 +95,7 @@ const createPinElement = (pin,pinObject) => {
 
   const deletePin = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     $
       .get(`/pins/${pin.id}/delete`)
       .then(loadPins)
