@@ -9,8 +9,12 @@ const mapId = pathname.split("/")[2];
 $(document).ready(() => {
   fetchMap();
   selectPinOnMap();
-});
 
+  $(".edit-submit").on("click", submitEdit);
+});
+const submitEdit = () => {
+  console.log("click");
+};
 // show pin position on map when selected from side menu
 const selectPinOnMap = () => {
   $("#floating-menu").on("mouseover", "li", function () {
@@ -163,7 +167,7 @@ const editPin = (pinId) => {
      <label>Image URL</label>
      <input name="url" type="text" class="edit-url">
 
-    <button class='edit-submit' type="button">Edit</button>
+    <button class='edit-submit'>Edit</button>
 
   </form>`;
 
