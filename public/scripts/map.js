@@ -66,27 +66,6 @@ const loadMap = (mapData) => {
   map.addListener("click", onMapClick);
 };
 
-// const submitEdit = (e) => {
-//   e.preventDefault();
-
-//   console.log("hello");
-
-// const title = $(".edit-title").text();
-// const description = $(".edit-description").text();
-// const url = $(".edit-url").text();
-
-// const pinData = { title, description, url };
-
-// $.post(`/pins/${pinId}`, pinData)
-//   .then(() => {
-//     console.log(`Success to Edit pin`);
-//     fetchMap();
-//   })
-//   .catch((err) => {
-//     console.log(`Edit pin Error :`, err.message);
-//   });
-// };
-
 // Add a new marker when clicking map
 const onMapClick = (event) => {
   const coordinates = event.latLng;
