@@ -7,14 +7,11 @@ let infowindowIsOpen = false;
 const pathname = window.location.pathname;
 const mapId = pathname.split("/")[2];
 $(document).ready(() => {
+  // $(".edit-submit").on("click", submitEdit);
   fetchMap();
   selectPinOnMap();
-
-  $(".edit-submit").on("click", submitEdit);
 });
-const submitEdit = () => {
-  console.log("click");
-};
+
 // show pin position on map when selected from side menu
 const selectPinOnMap = () => {
   $("#floating-menu").on("mouseover", "li", function () {
@@ -156,7 +153,7 @@ const generateInfoContent = (pin) => {
 
 const editPin = (pinId) => {
   //these are existing data from the database //
-  // console.log("coming from edit pin ", pinId, pinTitle, pinImg, pinDesc);
+  console.log("coming from edit pin ", pinId);
 
   const editContent = `
   <form id="edit-form" method="POST" >
@@ -167,7 +164,7 @@ const editPin = (pinId) => {
      <label>Image URL</label>
      <input name="url" type="text" class="edit-url">
 
-    <button class='edit-submit'>Edit</button>
+    <p onClick="submitEdit(${pinId})" class='edit-submit'>Edit</p>
 
   </form>`;
 
@@ -175,6 +172,24 @@ const editPin = (pinId) => {
   //send the data to editSubmit function (pinTitle, pinDesc, pinImg, pinId)
   // <button onClick="console.log("hi")" class="edit-submit" >Edit</button>
   $(".info-window").empty().append(editContent);
+};
+
+const submitEdit = (pinId) => {
+  console.log("hello");
+
+  const title = $(".edit-title").val();
+  const description = $(".edit-description").val();
+  const url = $(".edit-url").val();
+
+  const pinData = { title, description, url };
+
+  $.post(`/pins/${pinId}`, pinData)
+    .then(() => {
+      console.log(`Success to Edit pin`);
+    })
+    .catch((err) => {
+      console.log(`Edit pin Error :`, err.message);
+    });
 };
 
 //create HTML skeleton//

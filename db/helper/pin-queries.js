@@ -34,7 +34,7 @@ module.exports.deletePin = (id) => {
 
 //Edit pin by the id
 module.exports.editPin = (pin, pinId) => {
-  console.log(pin);
+  console.log("pin", pin);
   const queryString = `
   UPDATE pins
   SET title = $1, description = $2, image_url = $3
