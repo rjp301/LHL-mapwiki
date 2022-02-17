@@ -148,22 +148,39 @@ const createPinElement = (pin, pinObject) => {
 
     const contentString = `
     <div class='info-window'>
-      <h3>${pin.title}</h3>
-      <img src='${pin.image_url}'>
-      <p>${pin.description}</p>
+      <h3 contenteditable="true" id="new-pin-title">${pin.title}</h3>
+      <div contenteditable="true" id="new-pin-img">${pin.image_url}</div>
+      <p contenteditable="true" id="new-pin-desc">${pin.description}</p>
       <div class="btn-group">
-        <button onClick=movePin(${pin.id}) class="pin-move">New Position</button>
-        <button onClick=savePin(${pin.id}) class="pin-save">Save Changes</button>
+        <button class="pin-save">Save Changes</button>
       </div>
     </div>
     `;
 
     const editWindow = new google.maps.InfoWindow({ content: contentString });
 
-    editWindow.open({
-      anchor: pinObject.pinMarker,
-      shouldFocus: false,
-      map,
+    editWindow.open(map, pinObject.pinMarker);
+
+    google.maps.event.addListener(editWindow, "domready", () => {
+      $(".pin-move").click(() => {
+        //
+      });
+
+      $(".pin-save").click(() => {
+        // get values from window and send to database
+        const newPin = {
+          title: $("#new-pin-title").text(),
+          image_url: $("#new-pin-img").text(),
+          description: $("#new-pin-desc").text(),
+        };
+
+        $.post(`/pins/${pin.id}`, newPin)
+          .then(() => {
+            google.maps.event.trigger(map, "click");
+            loadPins();
+          })
+          .catch((err) => console.error(err.stack));
+      });
     });
 
     map.addListener("click", () => {
@@ -197,8 +214,8 @@ const createMapPin = (pin) => {
 
   const contentString = `
   <div class='info-window'>
-  <h3>${pin.title}</h3>
   <img src='${pin.image_url}'>
+  <h3 >${pin.title}</h3>
   <p>${pin.description}</p>
   </div>
   `;
@@ -233,15 +250,6 @@ const createMapPin = (pin) => {
   return pinObject;
 };
 // }
-
-//// Need implementation ////
-const movePin = (pinId) => {
-  const pinObject = allPins[pinId];
-  console.log(pinObject);
-};
-
-//// Need implementation ////
-const savePin = (pinId) => {};
 
 const addPin = function () {
   const listener = map.addListener("click", (event) => {

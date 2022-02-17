@@ -24,7 +24,6 @@ body {
     flex-direction: row;
   }
 
-
   main {
     display: flex;
     flex-direction: row;
@@ -48,7 +47,6 @@ body {
 
           margin: 2px;
           padding: 5px;
-
         }
       }
     }
@@ -56,7 +54,6 @@ body {
     #map {
       flex: 5;
     }
-
   }
 }
 
@@ -65,10 +62,28 @@ body {
 
   img {
     width: 100%;
+    height: 150px;
+  }
+  h3 {
+    text-align: center;
+    color: $col-primary;
+    font-size: 30px;
   }
 }
+button.pin-save {
+  margin: 0 auto;
+  background-color: #778da9;
+  border: none;
+  padding: 5px 15px;
+  color: white;
+  font-size: 15px;
+  width: 100%;
+  outline: none;
+}
 
-
+.gm-style .gm-style-iw-c {
+  border-radius: 0;
+}
 // #map {
 //   height: 100%;
 //   width: 100%;

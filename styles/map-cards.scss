@@ -86,8 +86,11 @@
       margin: 0;
       margin-top: 4px;
     }
+    h3 {
+      color: $col-primary;
+    }
+    p {
+      font-size: 14px;
+    }
   }
-}
-p {
-  font-size: 14px;
 }

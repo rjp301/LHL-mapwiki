@@ -6,7 +6,7 @@ const db = require("../../lib/db");
  **/
 
 module.exports.getPinsByMap = (map_id) => {
-  const queryString = `SELECT * FROM pins WHERE map_id = $1`;
+  const queryString = `SELECT * FROM pins WHERE map_id = $1 ORDER BY id DESC`;
   const queryValues = [map_id];
   return db
     .query(queryString, queryValues)
