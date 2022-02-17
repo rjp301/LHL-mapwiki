@@ -17,13 +17,61 @@ $().ready(() => {
     .catch(err => console.error(err.stack));
 });
 
+//// MODIFYING MAP TITLE/DESCRIPTION ////
+// send map data to database
+const sendMapData = (mapData) => {
+  $.ajax({
+    url: `/maps/${mapId}`,
+    method: "POST",
+    data: mapData,
+  })
+};
+
+//set selected text fields to editable or default
+const toggleTextFields = (editable, texts) => {
+  for (const item in texts) {
+    if (editable) {
+      texts[item].attr("contenteditable", "true");
+      texts[item].css("background-color", "gainsboro");
+    } else {
+      texts[item].attr("contenteditable", "false");
+      texts[item].css("background-color", "inherit");
+    }
+  }
+};
+
+// Update map title and description
+const editMapInfo = function () {
+  const $editButton = $(this);
+  const $mapTitle = $("#map-title");
+  const $mapDesc = $("#map-description");
+  const mapInfo = { title: $mapTitle, description: $mapDesc };
+
+  //toggle between "edit" and "save changes" when clicking edit button
+  $editButton.toggleClass("edit-active");
+
+  if ($editButton.hasClass("edit-active")) {
+    $editButton.text("Save Changes");
+    toggleTextFields(true, mapInfo);
+  } else {
+    $editButton.text("Edit Map");
+    toggleTextFields(false, mapInfo);
+
+    //collect and submit updated texts
+    const mapData = {
+      name: $mapTitle.text(),
+      description: $mapDesc.text(),
+    }
+    sendMapData(mapData);
+    }
+};
+
+////
+
 const initializePage = (mapObject) => {
   // Load in map title and description
   // Need edit functionality implemented
-  $('#edit-map')
-    .click(
-
-    );
+  $('#edit-map').click(editMapInfo);
 
   $('#map-title').text(mapObject.name);
   $('#map-description').text(mapObject.description);
