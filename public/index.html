@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="/styles/map-cards.css" type="text/css" />
 
     <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+    <script type="text/javascript" src="/vendor/js.cookie.js"></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
   </head>
 
@@ -47,7 +48,7 @@
           <h2 href="#">Cheese Map</h2>
         </div>
         <div class="nav-group">
-          <span id="username"> username </span>
+          <span id="username">not logged in</span>
           <button id="login-button" class="btnA">Login</button>
         </div>
       </div>
@@ -65,21 +66,8 @@
     </nav>
     <main>
       <!-- ALL CONTENT GOES HERE -->
-      <a class="card" href="/maps/${map.id}">
-        <section id="map-container">
-          <div class="card-icons">
-            <i class="fa-solid fa-heart"></i>
-            <i class="fa-solid fa-share"></i>
-          </div>
-          <img src="https://maps.googleapis.com/maps/api/staticmap?center=53.5329309655172%2C-7.35168306896552&zoom=12&size=400x600&maptype=roadmap&key=AIzaSyA-D8LhW4Ec_OVp-pd5AyUmDvjYzjXCCBc" alt="">
-          <div class="card-text">
-            <div class="card-url">localhost:8080/maps/4</div>
-            <h3>${map.name}</h3>
-            <p>${map.description}</p>
-          </div>
-        </a>
+      <section id="map-container">
       </section>
-      <section id="view-map-page"></section>
     </main>
   </body>
 </html>
