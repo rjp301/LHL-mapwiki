@@ -186,6 +186,7 @@ const submitEdit = (pinId) => {
   $.post(`/pins/${pinId}`, pinData)
     .then(() => {
       console.log(`Success to Edit pin`);
+      $(".info-window").empty().append(generateInfoContent(pinId));
     })
     .catch((err) => {
       console.log(`Edit pin Error :`, err.message);
