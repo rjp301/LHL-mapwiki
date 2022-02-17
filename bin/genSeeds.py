@@ -36,7 +36,7 @@ for index in range(1000):
   pins.at[index,"map_id"] = str(map_index + 1)
   pins.at[index,"title"] = add_quotes(fake.text(16)[:-1])
   pins.at[index,"description"] = add_quotes(fake.paragraph(2))
-  pins.at[index,"image_url"] = add_quotes(fake.image_url())
+  pins.at[index,"image_url"] = add_quotes("https://picsum.photos/300")
   pins.at[index,"lat"] = str(fake.coordinate(maps.loc[map_index,"temp_lat"],0.02))
   pins.at[index,"lng"] = str(fake.coordinate(maps.loc[map_index,"temp_lng"],0.02))
 
