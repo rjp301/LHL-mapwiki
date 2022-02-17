@@ -1,4 +1,5 @@
-//first initialize the map as a global valuable//
+function loadPage () {
+//initialize the map as a global valuable//
 let map;
 let allPins = [];
 let infowindowIsOpen = false;
@@ -10,45 +11,64 @@ const mapId = pathname.split("/")[2];
 $(document).ready(() => {
   fetchMap();
   selectPinOnMap();
+  loadEditMapListener();
 
-  // edit button on click, title/desc html becomes editable, edit becomes save button
-  $("#floating-menu").on("click", ".inner-editmap-btn", function () {
+});
+
+
+//// For updating map title, description ////
+// set click listener for updating map title and description
+const loadEditMapListener = () => {
+
+   $("#floating-menu").on("click", ".inner-editmap-btn", function () {
 
     const $editButton = $(this);
     const $mapTitle = $("#list-of-locations > h2");
     const $mapDesc = $("#list-of-locations > p");
+    const mapInfo = { title: $mapTitle, description: $mapDesc };
 
     //toggle between "edit" and "save changes" when clicking edit button
     $editButton.toggleClass("edit-active");
+
     if ($editButton.hasClass("edit-active")) {
       $editButton.text("Save Changes");
-      $mapTitle.attr("contenteditable", "true");
-      $mapTitle.css("background-color", "yellow");
-      $mapDesc.attr("contenteditable", "true");
-      $mapDesc.css("background-color", "yellow");
+      toggleTextFields(true, mapInfo);
     } else {
       $editButton.text("Edit");
-      $mapTitle.attr("contenteditable", "false");
-      $mapTitle.css("background-color", "inherit");
-      $mapDesc.attr("contenteditable", "false");
-      $mapDesc.css("background-color", "inherit");
-    }
+      toggleTextFields(false, mapInfo);
 
-  // send updated data to database after clicking 'save changes'
-  if ($editButton.text() === "Edit") {
-    const mapData = {
-      name: $mapTitle.text(),
-      description: $mapDesc.text(),
+      //collect and submit updated texts
+      const mapData = {
+        name: $mapTitle.text(),
+        description: $mapDesc.text(),
+      }
+      sendMapData(mapData);
     }
-    console.log("sending...", mapData)
-    $.ajax({
-      url: `/maps/${mapId}`,
-      method: "POST",
-      data: mapData,
-    })
-  }
   })
-});
+}
+
+// send map data to database
+const sendMapData = (mapData) => {
+  $.ajax({
+    url: `/maps/${mapId}`,
+    method: "POST",
+    data: mapData,
+  })
+}
+// set selected text fields to editable or default
+const toggleTextFields = (editable, texts) => {
+  for (const item in texts) {
+    if (editable) {
+      texts[item].attr("contenteditable", "true");
+      texts[item].css("background-color", "gainsboro");
+    } else {
+      texts[item].attr("contenteditable", "false");
+      texts[item].css("background-color", "inherit");
+    }
+  }
+};
+
+
 
 // show pin position on map when selected from side menu
 const selectPinOnMap = () => {
@@ -67,17 +87,6 @@ const selectPinOnMap = () => {
     }
   })
 }
-
-// const editMapInfo = () => {
-//     const $menu = $('#floating-menu');
-
-//       console.log($($menu).children())
-
-//     // $menu.on("click", "h2", () => {
-
-//     // })
-
-// }
 
 // bounce and show selected pin on map
 const showSelectedPinOnMap = function(index) {
@@ -99,7 +108,7 @@ const reloadSidebar = () => {
 };
 
 //Load fullsize google map//
-const loadMap = (mapData) => {
+const initMap = (mapData) => {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 12,
     center: { lat: mapData.avg_lat, lng: mapData.avg_lng },
@@ -133,7 +142,7 @@ const addNewPin = (position) => {
     latitude: newPin.getPosition().lat(),
     longitude: newPin.getPosition().lng(),
   };
-
+  infowindowIsOpen = true;
   addPinToDatabase(pinData);
 };
 
@@ -163,12 +172,24 @@ const mapPins = (pin) => {
   marker.addListener("click", () => {
     const infoWindow = mapInfo(pin);
 
-    infowindow.open({
-      anchor: marker,
-      map,
-      });
+    // infowindow.open({
+    //   anchor: marker,
+    //   map,
+    //   });
     //   infowindowIsOpen = true;
     // }
+
+      // click pin to toggle infowindow
+      if (infowindowIsOpen) {
+      infowindow.close();
+      infowindowIsOpen = false;
+    } else if (!infowindowIsOpen) {
+        infowindow.open({
+        anchor: marker,
+        map,
+        });
+        infowindowIsOpen = true;
+    }
   });
 };
 
@@ -265,7 +286,7 @@ const fetchPins = (mapId) => {
 };
 
 const renderMap = function (map) {
-  loadMap(map);
+  initMap(map);
   fetchPins(map.id);
 
   $("#floating-menu").empty();
@@ -280,6 +301,9 @@ const deletePin = (pinId) => {
   });
   fetchMap();
 };
+
+}
+
 
 //
 //
@@ -301,4 +325,3 @@ const deletePin = (pinId) => {
     //   infowindow.close();
     //   infowindowIsOpen = false;
     // } else if (!infowindowIsOpen) {
-
