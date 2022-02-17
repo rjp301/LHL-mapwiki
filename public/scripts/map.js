@@ -20,13 +20,13 @@ $().ready(() => {
 const initializePage = (mapObject) => {
   // Load in map title and description
   // Need edit functionality implemented
-  $('#edit-title')
-    .after(mapObject.name)
-    .click();
+  $('#edit-map')
+    .click(
 
-  $('#edit-description')
-    .after(mapObject.description)
-    .click();
+    );
+
+  $('#map-title').text(mapObject.name);
+  $('#map-description').text(mapObject.description);
 
   // Change username
   $
@@ -83,7 +83,6 @@ const createPinElement = (pin,pinObject) => {
 
   const editPin = function(event) {
     event.preventDefault();
-
   };
 
   const deletePin = function(event) {
@@ -102,7 +101,6 @@ const createPinElement = (pin,pinObject) => {
 
   return $pin;
 };
-
 
 const createMapPin = (pin) => {
   //Add pin to map along with all accompanying infrastructure
