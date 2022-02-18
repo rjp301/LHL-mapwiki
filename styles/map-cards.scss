@@ -1,17 +1,20 @@
 @import "_variables";
 
 #map-container {
-  padding: 3em;
+  // padding: 3em 5em;
+  padding: 40px calc((100% - (255px * 3)) / 3);
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .card {
+  flex: 0 0 25%;
   color: rgb(87, 83, 80);
-  margin: 1em;
-  width: 28%;
-  height: 300px;
+  margin: 2.2em;
+  // width: 25%;
+  min-width: 250px;
+  height: 250px;
   position: relative;
   background-color: white;
   border-radius: 5px; /* 5px rounded corners */
@@ -50,20 +53,20 @@
     .fa-heart {
 
       &.red {
-        color: red;
+        color: $col-mid1;
       }
 
       &:hover {
-        color: red;
+        color: $col-mid1;
       }
     }
 
     .fa-share:hover {
-      color: salmon;
+      color: $col-accent2;
     }
 
     .fa-trash-can:hover {
-      color: orange;
+      color: $col-primary-light
     }
 
   }
@@ -82,12 +85,19 @@
     bottom: 0;
     height: fit-content;
     padding: 8px;
-    border-radius: 0 0 5px 5px;
+    // border-radius: 0 0 5px 5px;
     background-color: transparentize($color: $col-base, $amount: 0.2);
 
     & * {
       margin: 0;
       margin-top: 4px;
+    }
+    h3 {
+      color: $col-primary;
+      text-align: center;
+    }
+    p {
+      font-size: 14px;
     }
   }
 }

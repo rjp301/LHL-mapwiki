@@ -112,7 +112,6 @@ const createMapElement = (map, isFav) => {
     <div class="card-text">
       <div class="card-url">localhost:8080/maps/${map.id}</div>
       <h3>${map.name}</h3>
-      <p>${map.description}</p>
     </div>
   </a>
   `);
