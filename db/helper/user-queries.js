@@ -1,4 +1,3 @@
-const { query } = require("express");
 const db = require("../../lib/db");
 
 module.exports.getUsers = () => {
@@ -15,6 +14,6 @@ module.exports.getUserName = (id) => {
   const queryValues = [id];
   return db
     .query(queryString, queryValues)
-    .then(res => res.rows[0].name)
+    .then((res) => res.rows[0].name)
     .catch((err) => console.error(err.stack));
 };

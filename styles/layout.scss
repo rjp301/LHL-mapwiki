@@ -3,5 +3,10 @@
 body,
 html {
   margin: 0;
-  font-family: 'Readex Pro', sans-serif;
+  font-family: "Readex Pro", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background-color: rgba(255, 245, 238, 0.678);
 }

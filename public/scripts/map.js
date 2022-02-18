@@ -33,10 +33,29 @@ const initializePage = () => {
   $("#new-pin").click(addPin);
 };
 
+// fetch user coordinates
+const findUserLocation = () => {
+  let position;
+  navigator.geolocation.getCurrentPosition((position) => {
+    position = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+    };
+    map.setCenter(position);
+  });
+  return position;
+};
+
 const initMap = () => {
   getMap().then((mapObject) => {
+    //if map is blank, center map on user coordinates
+    if (!mapObject.avg_lat || !mapObject.avg_lng) {
+      centerCoords = findUserLocation();
+    } else {
+      centerCoords = { lat: mapObject.avg_lat, lng: mapObject.avg_lng };
+    }
     map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: mapObject.avg_lat, lng: mapObject.avg_lng },
+      center: centerCoords,
       zoom: 14,
       streetViewControl: false,
       fullscreenControl: false,
@@ -148,8 +167,8 @@ const createPinElement = (pin, pinObject) => {
 
     const contentString = `
     <div class='info-window'>
-      <h3 contenteditable="true" id="new-pin-title">${pin.title}</h3>
       <div contenteditable="true" id="new-pin-img">${pin.image_url}</div>
+      <h3 contenteditable="true" id="new-pin-title">${pin.title}</h3>
       <p contenteditable="true" id="new-pin-desc">${pin.description}</p>
       <div class="btn-group">
         <button class="pin-save">Save Changes</button>

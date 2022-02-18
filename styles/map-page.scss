@@ -64,11 +64,6 @@ body {
     width: 100%;
     height: 150px;
   }
-  h3 {
-    text-align: center;
-    color: $col-primary;
-    font-size: 30px;
-  }
 }
 button.pin-save {
   margin: 0 auto;
@@ -84,48 +79,10 @@ button.pin-save {
 .gm-style .gm-style-iw-c {
   border-radius: 0;
 }
-// #map {
-//   height: 100%;
-//   width: 100%;
-// }
 
-// #map-page-header {
-//   position: fixed;
-//   z-index: 1;
-//   right: 2%;
-// }
-
-// #floating-menu {
-//   width: 35%;
-//   max-width: 500px;
-//   height: 80%;
-//   top: 5%;
-//   left: 5%;
-//   position: fixed;
-//   z-index: 1;
-//   display: flex;
-//   justify-content: space-around;
-//   align-items: flex-start;
-// }
-
-// #list-of-locations {
-//   width: 100%;
-//   height: 100%;
-//   background-color: whitesmoke;
-//   /*can add show/hide toggle in jQuery*/
-// }
-
-// #map-buttons {
-//   margin: 1em;
-//   padding: 1em;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: space-evenly;
-//   row-gap: 1em;
-// }
-
-// // #list-of-locations > ul > li { background-color: #336699; }
-// #list-of-locations > ul > li:hover, #list-of-locations > ul > li.green { background-color: #7fab7f; }
-// #pin-form {
-//   background-color: whitesmoke;
-// }
+h3.info-title {
+  font-size: 1.2rem;
+  color: $col-primary;
+  margin-bottom: 5px;
+  text-align: center;
+}
