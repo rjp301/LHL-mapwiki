@@ -174,7 +174,6 @@ const createPinElement = (pin, pinObject) => {
       <div contenteditable="true" id="new-pin-img">${pin.image_url}</div>
       <p contenteditable="true" id="new-pin-desc">${pin.description}</p>
       <div class="btn-group">
-        <button class="pin-move">New Position</button>
         <button class="pin-save">Save Changes</button>
       </div>
     </div>

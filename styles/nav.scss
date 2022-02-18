@@ -10,7 +10,7 @@ nav {
 
   div.nav {
     background-color: $col-base;
-    color: $col-accent1;
+    color: $col-primary;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -66,46 +66,11 @@ main {
   padding-top: 104px;
 }
 
-//   .__logo {
-//   }
-
-//   .__item {
-//     .-1 {
-//       flex-grow: 2;
-//       text-align: center;
-//     }
-//     .-2 {
-//       flex-grow: 1;
-//       text-align: right;
-//     }
-//     .-3 {
-//       flex-grow: 1;
-//       text-align: center;
-//     }
-
-//     .-4 {
-//       flex-grow: 1;
-//       text-align: left;
-//     }
-//   }
-// }
-
-// .navbar {
-//   .__top {
-//     display: flex;
-//     flex-direction: row;
-//     justify-content: space-between;
-//     padding-top: 1rem;
-//     margin: 0 1.2em;
-//   }
-
-//   .__nav {
-//     display: flex;
-//     flex-direction: row;
-//     justify-content: center;
-//     margin-top: 1.5em;
-//     margin-bottom: 0;
-//     padding: 0.3rem;
-//     background-color: #94b3fd;
-//   }
-// }
+img.nav-logo {
+  width: 30px;
+  margin-right: 0;
+}
+h1 {
+  margin-left: 0 !important;
+  font-size: 2.3rem;
+}
