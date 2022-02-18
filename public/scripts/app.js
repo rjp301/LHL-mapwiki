@@ -29,6 +29,7 @@ const login = () => {
   $.get("/login");
   $.get(`/users/${Cookies.get("userId")}`).then((name) => {
     $("#username").text(name);
+    $("#login-button").text("Logout");
   });
 };
 

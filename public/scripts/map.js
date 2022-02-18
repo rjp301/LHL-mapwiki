@@ -284,3 +284,24 @@ const addPin = function () {
       .catch((err) => console.error(err.stack));
   });
 };
+
+//
+//
+// future/stretch ideas //
+//could add optional drag function //
+//in routes/queries, add || to determine which fields get updated and which stay the same value
+// google.maps.event.addListener(marker, 'dragend', function (evt) {
+//   const pinNewPosition = evt.latLng;
+//   $.ajax({
+//     url: "/pins/:id",
+//     method: 'POST',
+//     data: pinNewPosition
+//   });
+//   // map.panTo(evt.latLng);
+// })
+
+// click pin to toggle infowindow
+// if (infowindowIsOpen) {
+//   infowindow.close();
+//   infowindowIsOpen = false;
+// } else if (!infowindowIsOpen) {
