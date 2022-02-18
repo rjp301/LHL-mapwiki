@@ -1,3 +1,5 @@
+@import "_variables";
+
 html,
 body {
   height: 100%;
@@ -5,12 +7,16 @@ body {
 }
 
 body {
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
 
   header {
+    position: fixed;
+    z-index: 1;
     height: 50px;
-    background-color: green;
+    top: 1em;
+    right: 2em;
+    // background-color: #a9d0a9;
     align-items: center;
     justify-content: flex-end;
 
@@ -19,40 +25,79 @@ body {
     }
   }
 
-  .btn-group {
-    display: flex;
-    flex-direction: row;
-  }
-
   main {
     display: flex;
     flex-direction: row;
     height: 100%;
 
     #menu {
-      flex: 1;
-      background-color: slategray;
+      width: 20%;
+      height: 60%;
+      max-width: 250px;
+      position: fixed;
+      top: 3em;
+      left: 2em;
+      z-index: 1;
+      background-color: #ffffff;
       min-width: 220px;
-      max-width: min-content;
+
+      button {
+        padding: 0.8em;
+        border: none;
+      }
+
+      button:hover {
+        filter: saturate(3);
+      }
+
+      .btn-group {
+        display: flex;
+        justify-content: space-evenly;
+      }
+
+      #back-to-maps {
+        width: 100%;
+        background-color: #d5dfce;
+      }
+
+      #new-pin {
+        background-color: $col-accent2;
+      }
+
+      #edit-map {
+        background-color: $col-primary-light;
+      }
+
+      #map-title {
+        padding: 0.2em 1em;
+      }
+
+      #map-description {
+        padding: 0.5em 1em;
+      }
 
       #location-list {
-        display: flex;
+        margin: 1em 0;
+        height: 100%;
+        // display: flex;
         flex-direction: column;
+        overflow: scroll;
 
         .pin-item {
-          background-color: salmon;
+          // background-color: #ffffff;
+          color: gray;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
-
-          margin: 2px;
-          padding: 5px;
+          padding: 0.5em;
         }
       }
     }
 
     #map {
-      flex: 5;
+      width: 100%;
+      height: 100%;
+      // flex: 5;
     }
   }
 }
