@@ -1,0 +1,76 @@
+@import "_variables";
+
+nav {
+
+  position: fixed;
+  top: 0;
+  width: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  z-index: 1;
+
+  div.nav {
+    background-color: $col-base;
+    color: $col-primary;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+
+    div * {
+      margin: 0.5rem;
+    }
+
+    i {
+      transform: scale(2.3);
+    }
+
+    .nav-group {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    button {
+      border: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 5px;
+      font-weight: bold;
+
+      box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+      transition: 0.3s;
+
+      &:hover {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transform: scale(1.02);
+      }
+    }
+
+    #username {
+      color: $col-mid2;
+      font-weight: bold;
+    }
+  }
+  .btnA {
+    background-color: $col-mid2;
+    color: $col-base;
+  }
+
+  .btnB {
+    background-color: $col-mid1;
+    color: $col-base;
+  }
+}
+
+main {
+  padding-top: 104px;
+}
+
+img.nav-logo {
+  width: 30px;
+  margin-right: 0;
+}
+h1 {
+  margin-left: 0 !important;
+  font-size: 2.3rem;
+}

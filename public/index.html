@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;600&display=swap" rel="stylesheet">
 
-    <title>Cheese Map</title>
+    <title>WikiMap</title>
 
     <!-- Vendor CSS -->
     <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="/styles/map-cards.css" type="text/css" />
 
     <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+    <script type="text/javascript" src="/vendor/js.cookie.js"></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
   </head>
 
@@ -43,11 +44,11 @@
     <nav>
       <div class="nav-top nav">
         <div class="nav-group">
-          <span><i class="fa-solid fa-map"></i></span>
-          <h2 href="#">Cheese Map</h2>
+          <span><img class="nav-logo" src="./docs/map.png" /></span>
+          <h2 href="#">WikiMap</h2>
         </div>
         <div class="nav-group">
-          <span id="username"> username </span>
+          <span id="username">not logged in</span>
           <button id="login-button" class="btnA">Login</button>
         </div>
       </div>
@@ -67,7 +68,6 @@
       <!-- ALL CONTENT GOES HERE -->
       <section id="map-container">
       </section>
-      <section id="view-map-page"></section>
     </main>
   </body>
 </html>

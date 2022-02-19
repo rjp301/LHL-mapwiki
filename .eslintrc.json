@@ -3,7 +3,8 @@
     "commonjs": true,
     "es6": true,
     "node": true,
-    "mocha": true
+    "mocha": true,
+    "jquery": true
   },
   "extends": "eslint:recommended",
   "globals": {
@@ -40,7 +41,7 @@
     "func-style": ["error", "expression"],
     "space-infix-ops": "error",
     "space-in-parens": "error",
-    "camelcase": "error",
+    // "camelcase": "error",
     "eqeqeq": "error",
     "brace-style": "error",
     "space-before-function-paren": [ "warn", { "anonymous": "never", "named": "never", "asyncArrow": "never" } ],
